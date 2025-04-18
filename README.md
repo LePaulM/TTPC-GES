@@ -1,44 +1,33 @@
-# TTPC-GES
+# 🧠 TTPC-GES
 
-Application de gestion d'animaux (TENDRES TRUFFES) en Java.
+TTPC-GES est une application Java pour la gestion des projets du club TTPC. Elle fonctionne sous Windows (actuellement) et utilise Java 17 + Maven.
 
-## 🛠 Structure du projet
+---
 
-```
-TTPC-GES/
-├── src/                        # Code source Java (organisé par packages)
-│   ├── Main.java
-│   ├── model/
-│   └── view/
-├── resources/                 # Splashscreen, icônes, fichiers externes
-│   ├── logo_TENDRES_TRUFFES.png
-│   └── logo_TENDRES_TRUFFES.ico
-├── lib/                       # Librairie JDBC
-│   └── sqlite-jdbc-<version>.jar
-├── manifest/                  # Fichier MANIFEST.MF pour le splash et la classe principale
-│   └── MANIFEST.MF
-├── build_fat_jar_recursive.bat # Script Windows pour compiler et générer le .jar autonome
-```
+## 🚀 Fonctionnalités
 
-## ▶️ Compilation
+- Interface graphique Java
+- Accès à une base de données (SQLite ou autre via JDBC)
+- Gestion de projets (CRUD)
+- Architecture propre et modulaire
 
-1. Vérifier que `JAVA_HOME` est défini et accessible depuis `cmd`
-2. Double-cliquer sur `build_fat_jar_recursive.bat` ou exécuter en ligne de commande
+---
 
-Le script va :
-- Compiler le code source
-- Copier les ressources
-- Décompresser la lib JDBC
-- Créer `TTPC-GES-fat.jar` autonome avec splash intégré
+## 🧱 Structure du projet
 
-## ✅ Utilisation
-
-Lancer l'application :
 ```bash
-java -jar TTPC-GES-fat.jar
+TTPC-GES/
+├── pom.xml
+├── src/
+│   ├── main/java/com/ttpc/ges/    # Code Java principal
+│   └── main/resources/            # Ressources (images, configs)
+│   └── test/java/com/ttpc/ges/    # Tests unitaires
+└── target/                        # Généré automatiquement au build
 ```
 
-## 📦 Distribution
+## Lancement 
+ - Build
+ -- mvn clean package
+ - Launch
+ -- java -jar target/ttpc-ges-1.0.0-jar-with-dependencies.jar
 
-- L'application fonctionne sans installation de Java sur les postes cibles si un JRE est ajouté
-- Le splashscreen est affiché automatiquement au démarrage
