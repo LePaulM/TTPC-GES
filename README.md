@@ -25,9 +25,47 @@ TTPC-GES/
 └── target/                        # Généré automatiquement au build
 ```
 
+---
+
 ## Lancement 
  - Build
  -- mvn clean package
  - Launch
  -- java -jar target/ttpc-ges-1.0.0-jar-with-dependencies.jar
 
+ ---
+
+## 📌 Stratégie de développement
+
+ - 🔀 Branches
+main : stable (prod)
+
+dev : branche de développement
+
+feature/xxx : nouvelle fonctionnalité
+
+bugfix/xxx : correction de bug
+
+- 🧾 Convention de commit
+Utilise les conventional commits :
+
+Tag	Description
+feat:	nouvelle fonctionnalité
+fix:	correction de bug
+docs:	mise à jour de la documentation
+refactor:	refonte interne du code
+test:	ajout/modif de tests
+build:	build system / dépendances
+chore:	tâches de maintenance
+Exemples :
+git commit -m "feat: ajout du module de création de projet"
+git commit -m "fix: gestion des accents en UTF-8"
+
+- 🧮 Versioning
+Suivi via Semantic Versioning : MAJOR.MINOR.PATCH
+
+MAJOR = changements incompatibles
+
+MINOR = nouvelles features compatibles
+
+PATCH = corrections sans rupture
