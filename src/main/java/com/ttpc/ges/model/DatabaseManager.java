@@ -33,7 +33,8 @@ public class DatabaseManager {
 	        try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
 
 	
-	        	stmt.executeUpdate("""
+	        	try {
+    stmt.executeUpdate("""
 	        		    CREATE TABLE IF NOT EXISTS animaux (
 	        		        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	        		        numeroId TEXT NOT NULL,
@@ -46,8 +47,15 @@ public class DatabaseManager {
 	        		        decede BOOLEAN DEFAULT 0
 	        		    )
 	        		""");
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(null,
+        "Erreur SQL : " + e.getMessage(),
+        "Erreur Base de Données",
+        JOptionPane.ERROR_MESSAGE);
+}
 	
-	            stmt.executeUpdate("""
+	            try {
+    stmt.executeUpdate("""
 					CREATE TABLE IF NOT EXISTS mouvements (
 					    id INTEGER PRIMARY KEY AUTOINCREMENT,
 					    animalId INTEGER NOT NULL,
@@ -58,14 +66,20 @@ public class DatabaseManager {
 					    FOREIGN KEY (animalId) REFERENCES animaux(id) ON DELETE CASCADE
 					)
 	                """);
+} catch (SQLException e) {
+    JOptionPane.showMessageDialog(null,
+        "Erreur SQL : " + e.getMessage(),
+        "Erreur Base de Données",
+        JOptionPane.ERROR_MESSAGE);
+}
 	
 	        } catch (SQLException e) {
 	            System.out.println("Erreur lors de l'initialisation de la base :");
-	            e.printStackTrace();
+	            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
 	        }
         } catch (ClassNotFoundException e) {
             System.out.println("[ERREUR] Driver SQLite non trouvé.");
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -94,7 +108,7 @@ public class DatabaseManager {
             rs.close();
         } catch (Exception e) {
             System.out.println("[ERREUR] Connexion ou lecture impossible :");
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -133,7 +147,7 @@ public class DatabaseManager {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -162,7 +176,7 @@ public class DatabaseManager {
                 animaux.add(animal);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
         return animaux;
     }
@@ -190,7 +204,7 @@ public class DatabaseManager {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
             JOptionPane.showMessageDialog(null,
                 "Une erreur est survenue lors de la récupération des mouvements.",
                 "Erreur base de données",
@@ -225,7 +239,7 @@ public class DatabaseManager {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
 
         return mouvements;
@@ -267,7 +281,7 @@ public class DatabaseManager {
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -280,20 +294,22 @@ public class DatabaseManager {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                return new Animal(
-                	rs.getString("numeroId"),
-                    rs.getString("nom"),
-                    rs.getString("espece"),
-                    rs.getString("sexe").charAt(0),
-                    rs.getInt("age"),
-                    rs.getString("provenance"),
-                    rs.getString("description"),
-                    rs.getBoolean("decede")
-                );
+            	Animal a = new Animal(
+            		    rs.getString("numeroId"),
+            		    rs.getString("nom"),
+            		    rs.getString("espece"),
+            		    rs.getString("sexe").charAt(0),
+            		    rs.getInt("age"),
+            		    rs.getString("provenance"),
+            		    rs.getString("description"),
+            		    rs.getBoolean("decede")
+            		);
+            		a.setId(rs.getInt("id")); // ← IMPORTANT
+            		return a;
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
         return null;
     }
@@ -307,20 +323,22 @@ public class DatabaseManager {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                return new Animal(
-                    rs.getString("numeroId"),
-                    rs.getString("nom"),
-                    rs.getString("espece"),
-                    rs.getString("sexe").charAt(0),
-                    rs.getInt("age"),
-                    rs.getString("provenance"),
-                    rs.getString("description"),
-                    rs.getBoolean("decede")
-                );
+            	Animal a = new Animal(
+            		    rs.getString("numeroId"),
+            		    rs.getString("nom"),
+            		    rs.getString("espece"),
+            		    rs.getString("sexe").charAt(0),
+            		    rs.getInt("age"),
+            		    rs.getString("provenance"),
+            		    rs.getString("description"),
+            		    rs.getBoolean("decede")
+            		);
+            		a.setId(rs.getInt("id")); // ← IMPORTANT
+            		return a;
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
         return null;
     }
@@ -339,7 +357,7 @@ public class DatabaseManager {
             pstmt.setBoolean(8, a.isDecede());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -359,7 +377,7 @@ public class DatabaseManager {
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -377,7 +395,7 @@ public class DatabaseManager {
                 System.out.println("Aucun animal trouvé avec l'id " + id);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -392,7 +410,7 @@ public class DatabaseManager {
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
         
@@ -468,7 +486,7 @@ public class DatabaseManager {
 
         } catch (SQLException e) {
             System.out.println("[ERREUR] Impossible de recuperer le mouvement ID=" + id);
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
         return null;
     }

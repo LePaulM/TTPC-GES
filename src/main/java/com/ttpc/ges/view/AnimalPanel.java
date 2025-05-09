@@ -8,12 +8,15 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
+import com.ttpc.ges.components.TTPCButton;
+import com.ttpc.ges.components.TTPCComboBox;
+import com.ttpc.ges.components.TTPCDialogMouvement;
+import com.ttpc.ges.components.TTPCTextField;
 import com.ttpc.ges.model.Animal;
 import com.ttpc.ges.model.DatabaseManager;
 import com.ttpc.ges.model.Mouvement;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,23 +24,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Scanner;
 
 public class AnimalPanel extends JPanel {
     private final DatabaseManager dbManager;
-    private JTextField nomField, especeField, provenanceField, searchField, numeroIdField;
+    private TTPCTextField nomField, especeField, provenanceField, searchField, numeroIdField;
     private JTextArea descriptionArea;
-    private JComboBox<String> sexeBox;
-    //private JTextField ageField;
+    private TTPCComboBox<String> sexeBox;
     private JSpinner ageSpinner;
     private JTable table;
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
     private JPanel formWrapper;
     private JSplitPane splitPane;
-    private JButton addButton,editButton, deleteButton, voirMouvementsButton, importButton, exportButton, toggleFormButton;
+    private TTPCButton addButton,editButton, deleteButton, voirMouvementsButton; 
+    private JButton importButton, exportButton, toggleFormButton;
     private Color blueColor = new Color(188,218,244);
-
 
     public AnimalPanel(DatabaseManager dbManager) {
         this.dbManager = dbManager;
@@ -62,18 +63,23 @@ public class AnimalPanel extends JPanel {
         formPanel.setBorder(BorderFactory.createTitledBorder("Ajouter un animal"));
         formPanel.setPreferredSize(new Dimension(250, 200));
 
-        numeroIdField = new JTextField();
-        nomField = new JTextField();
-        especeField = new JTextField();
-        sexeBox = new JComboBox<>(new String[]{"M", "F"});
+        numeroIdField = new TTPCTextField();
+        nomField = new TTPCTextField();
+        especeField = new TTPCTextField();
+        sexeBox = new TTPCComboBox<>(new String[]{"M", "F"});
         ageSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
-        provenanceField = new JTextField();
+        provenanceField = new TTPCTextField();
         descriptionArea = new JTextArea(3, 20);
         JScrollPane descriptionScroll = new JScrollPane(descriptionArea);
-        addButton = new JButton("Ajouter");
-        editButton = new JButton("Modifier la sélection");
-        deleteButton = new JButton("Supprimer la sélection");
-        voirMouvementsButton = new JButton("Voir les mouvements");
+        
+        addButton = new TTPCButton("Ajouter animal");
+        addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        editButton = new TTPCButton("Modifier la sélection");
+        editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        deleteButton = new TTPCButton("Supprimer la sélection");
+        deleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        voirMouvementsButton = new TTPCButton("Voir les mouvements");
+        voirMouvementsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         formPanel.add(new JLabel("Numéro d'identification :")); formPanel.add(numeroIdField);
         formPanel.add(new JLabel("Nom :")); formPanel.add(nomField);
@@ -90,6 +96,9 @@ public class AnimalPanel extends JPanel {
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(voirMouvementsButton);
+        buttonPanel.setLayout(new GridLayout(1, 0, 10, 10));
+        buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
+        buttonPanel.setPreferredSize(new Dimension(buttonPanel.getPreferredSize().width, 75));
 
         formPanel.setBackground(blueColor);
         buttonPanel.setBackground(blueColor);
@@ -111,8 +120,12 @@ public class AnimalPanel extends JPanel {
         sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
         JScrollPane scroll = new JScrollPane(table);
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setPreferredWidth(0);
 
-        searchField = new JTextField();
+        
+        searchField = new TTPCTextField();
         toggleFormButton = new JButton("▼ Cacher le formulaire");
         toggleFormButton.addActionListener(e -> {
             boolean visible = formWrapper.isVisible();
@@ -157,9 +170,13 @@ public class AnimalPanel extends JPanel {
         voirMouvementsButton.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row >= 0) {
-                int modelIndex = table.convertRowIndexToModel(row);
-                int id = (int) tableModel.getValueAt(modelIndex, 0); // colonne ID
+            	int modelIndex = table.convertRowIndexToModel(row);
+            	int id = (int) tableModel.getValueAt(modelIndex, 0);
                 Animal a = dbManager.getAnimalById(id);
+                System.out.println("ID sélectionné : " + id);
+                System.out.println("Animal récupéré : " + a);
+                System.out.println("Animal : " + a.getId() + " - " + a.getNom());
+
                 if (a != null) {
                     afficherMouvementsAnimal(a);
                 } else {
@@ -172,7 +189,6 @@ public class AnimalPanel extends JPanel {
 
         updateAnimalTable(this.dbManager.getTousLesAnimaux());
     }
-
 
     private void applyFilter() {
         String query = searchField.getText();
@@ -257,13 +273,11 @@ public class AnimalPanel extends JPanel {
                 updateAnimalTable(dbManager.getTousLesAnimaux());
                 JOptionPane.showMessageDialog(this, "Import terminé avec succès.", "Succès", JOptionPane.INFORMATION_MESSAGE);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Erreur lors de l'import CSV :\n" + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+            } catch (IOException e) {
+            	showMessage("Erreur : " + e.getMessage());
             }
         }
     }
-
 
     private void exporterCSV() {
         JFileChooser chooser = new JFileChooser();
@@ -293,13 +307,11 @@ public class AnimalPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Export CSV terminé :\n" + file.getAbsolutePath(), "Succès", JOptionPane.INFORMATION_MESSAGE);
 
             } catch (IOException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Erreur lors de l'export CSV", "Erreur", JOptionPane.ERROR_MESSAGE);
+            	showMessage("Erreur : " + e.getMessage());
             }
         }
     }
 
-    
     private void afficherMouvementsAnimal(Animal animal) {
         List<Mouvement> mouvements = dbManager.getMouvementsParAnimal(animal.getId());
 
@@ -323,15 +335,16 @@ public class AnimalPanel extends JPanel {
         }
 
         JTable table = new JTable(donnees, colonnes);
-        JScrollPane scroll = new JScrollPane(table);
 
-        JOptionPane.showMessageDialog(this,
-            scroll,
-            "Mouvements de : " + animal.getNom() + " (" + animal.getEspece() + ")",
-            JOptionPane.INFORMATION_MESSAGE
-        );
+        TTPCDialogMouvement dialog = new TTPCDialogMouvement(
+        	    "Mouvements de : " + animal.getNom(),
+        	    table,
+        	    600,
+        	    350
+        	);
+        	dialog.setVisible(true);
+
     }
-
 
     public void clearForm() {
     	numeroIdField.setText("");
@@ -355,6 +368,7 @@ public class AnimalPanel extends JPanel {
         String nom = nomField.getText().trim();
         // A GARDER - Evite les lignes vides lors de l'ajout
         if (nom.isEmpty() || numero.isEmpty()) {
+        	showMessage("Nom et identifiant sont obligatoires.");
             return;
         }
         String espece = especeField.getText().trim();
@@ -374,8 +388,7 @@ public class AnimalPanel extends JPanel {
         updateAnimalTable(dbManager.getTousLesAnimaux());
         MainFrame.updateMouvementComboBox();
     }
-
-    
+ 
     private void modifierSelection() {
         int row = table.getSelectedRow();
         if (row == -1) {
@@ -384,7 +397,8 @@ public class AnimalPanel extends JPanel {
         }
 
         int modelRow = table.convertRowIndexToModel(row);
-        String numeroId = (String) tableModel.getValueAt(modelRow, 0);
+        int id = (int) tableModel.getValueAt(modelRow, 0);
+        String numeroId = String.valueOf(id); // ou utilise id directement si c'est ce que tu veux
         String nom = (String) tableModel.getValueAt(modelRow, 1);
         String espece = (String) tableModel.getValueAt(modelRow, 2);
         String sexe = tableModel.getValueAt(modelRow, 3).toString();
@@ -458,7 +472,6 @@ public class AnimalPanel extends JPanel {
         }
     }
 
-
     // Empecher les lettres et caracteres speciaux dans le agespinner
     private void configurerAgeSpinner() {
         JFormattedTextField txt = ((JSpinner.DefaultEditor) ageSpinner.getEditor()).getTextField();
@@ -478,6 +491,5 @@ public class AnimalPanel extends JPanel {
             }
         });
     }
-
 
 }

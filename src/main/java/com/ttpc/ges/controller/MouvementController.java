@@ -2,8 +2,6 @@ package com.ttpc.ges.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-
 import com.ttpc.ges.model.DatabaseManager;
 import com.ttpc.ges.model.Mouvement;
 import com.ttpc.ges.view.MouvementPanel;

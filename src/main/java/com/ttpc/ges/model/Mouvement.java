@@ -1,6 +1,7 @@
 package com.ttpc.ges.model;
 
 import java.sql.Date;
+import java.time.Instant;
 
 public class Mouvement {
     private int id;
@@ -37,7 +38,7 @@ public class Mouvement {
         this.id = id;
         this.animalId = animalId;
         this.typeMouvement = typeMouvement;
-        this.dateMouvement = dateMouvement;
+        this.dateMouvement = dateMouvement != null ? dateMouvement : new java.sql.Date(Instant.now().toEpochMilli());
         this.isDecede = isDecede;
         this.destination = destination;
     }

@@ -5,9 +5,15 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.text.MaskFormatter;
 
+import com.ttpc.ges.components.TTPCButton;
+import com.ttpc.ges.components.TTPCComboBox;
+import com.ttpc.ges.components.TTPCDialogMouvement;
+import com.ttpc.ges.components.TTPCFormattedTextField;
+import com.ttpc.ges.components.TTPCTextField;
 import com.ttpc.ges.model.Animal;
 import com.ttpc.ges.model.DatabaseManager;
 import com.ttpc.ges.model.Mouvement;
+import com.ttpc.ges.utils.TTPCDateParser;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -17,8 +23,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,17 +35,20 @@ import java.util.Set;
 
 public class MouvementPanel extends JPanel {
     private final DatabaseManager dbManager;
-    private JComboBox<Animal> animalComboBox;
-    private JComboBox<String> typeBox;
+    private TTPCComboBox<Animal> animalComboBox;
+    private TTPCComboBox<String> typeBox;
     private JCheckBox decedeCheckBox;
-    private JTextField dateField,searchField;
-    private JTable table;
+    private TTPCFormattedTextField dateField;
+	private TTPCTextField searchField;
+	private JTable table;
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
     private List<Animal> animaux;
     private JPanel formWrapper;
-    private JButton toggleFormButton,editButton, addButton, deleteButton,importButton,exportButton, voirMouvementsButton;
+    private TTPCButton voirMouvementsButton,editButton, addButton, deleteButton;
+    private JButton importButton,exportButton,toggleFormButton;
     private JSplitPane splitPane;
+    
     private Color blueColor = new Color(188,218,244);
 
     public MouvementPanel(DatabaseManager dbManager) {
@@ -49,18 +60,14 @@ public class MouvementPanel extends JPanel {
         formPanel.setBorder(BorderFactory.createTitledBorder("Ajouter un mouvement"));
         formPanel.setPreferredSize(new Dimension(350, 200));
 
-        animalComboBox = new JComboBox<>();
-        typeBox = new JComboBox<>();
+        animalComboBox = new TTPCComboBox<>();
+        typeBox = new TTPCComboBox<>(new String[]{""});
         decedeCheckBox = new JCheckBox("Décédé");
         decedeCheckBox.setVisible(false);
+        decedeCheckBox.setBackground(blueColor);
 
-        try {
-            MaskFormatter dateMask = new MaskFormatter("##/##/####");
-            dateMask.setPlaceholder("  ");
-            dateField = new JFormattedTextField(dateMask);
-        } catch (ParseException e) {
-            dateField = new JFormattedTextField();
-        }
+        new SimpleDateFormat("dd/MM/yyyy");
+		dateField = new TTPCFormattedTextField();
 
         //  Préremplir avec la date du jour
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -72,10 +79,14 @@ public class MouvementPanel extends JPanel {
         formPanel.add(new JLabel("Date (JJ/MM/AAAA) :")); formPanel.add(dateField);
         formPanel.add(new JLabel("")); formPanel.add(decedeCheckBox);
 
-        addButton = new JButton("Ajouter");
-        editButton = new JButton("Modifier la sélection");
-        deleteButton = new JButton("Supprimer la sélection");
-        voirMouvementsButton = new JButton("Voir mouvements");
+        addButton = new TTPCButton("Ajouter");
+        addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        editButton = new TTPCButton("Modifier la sélection");
+        editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        deleteButton = new TTPCButton("Supprimer la sélection");
+        deleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        voirMouvementsButton = new TTPCButton("Voir tous les mouvements");
+        voirMouvementsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(addButton);
@@ -85,6 +96,11 @@ public class MouvementPanel extends JPanel {
 
         formPanel.setBackground(blueColor);
         buttonPanel.setBackground(blueColor);
+        buttonPanel.setLayout(new GridLayout(1, 0, 10, 10));
+        buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
+        buttonPanel.setPreferredSize(new Dimension(buttonPanel.getPreferredSize().width, 75));
+
+
         
         formWrapper = new JPanel();
         formWrapper.setLayout(new BoxLayout(formWrapper, BoxLayout.Y_AXIS));
@@ -108,9 +124,17 @@ public class MouvementPanel extends JPanel {
         table.setRowSorter(sorter);
         JScrollPane scroll = new JScrollPane(table);
         table.removeColumn(table.getColumnModel().getColumn(0)); // planque la colonne ID
+     // Cacher la colonne ID (colonne 0)
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setPreferredWidth(0);
+     // Cacher la colonne ID (colonne 1)
+        table.getColumnModel().getColumn(1).setMinWidth(0);
+        table.getColumnModel().getColumn(1).setMaxWidth(0);
+        table.getColumnModel().getColumn(1).setPreferredWidth(0);
 
 
-        searchField = new JTextField();
+        searchField = new TTPCTextField();
         toggleFormButton = new JButton("▼ Cacher le formulaire");
         toggleFormButton.addActionListener(e -> {
             boolean visible = formWrapper.isVisible();
@@ -148,7 +172,14 @@ public class MouvementPanel extends JPanel {
         });
 
         addButton.addActionListener(e -> ajouterMouvement());
-        editButton.addActionListener(e -> modifierSelection());
+        editButton.addActionListener(e -> {
+			try {
+				modifierSelection();
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				showMessage("Erreur bouton midifier : " + e1.getMessage());
+			}
+		});
         deleteButton.addActionListener(e -> supprimerSelection());
         importButton.addActionListener(e -> importerCSV());
         exportButton.addActionListener(e -> exporterCSV());
@@ -175,6 +206,10 @@ public class MouvementPanel extends JPanel {
                 }
                 sb.append("\n");
             }
+            System.out.println("Mouvements récupérés : " + mouvements.size());
+            for (Mouvement m : mouvements) {
+                System.out.println("→ " + m.getTypeMouvement() + " | " + m.getDateMouvement());
+            }
 
             JTextArea textArea = new JTextArea(sb.toString());
             textArea.setEditable(false);
@@ -183,7 +218,14 @@ public class MouvementPanel extends JPanel {
             JScrollPane scrollPane = new JScrollPane(textArea);
             scrollPane.setPreferredSize(new Dimension(400, 300));
 
-            JOptionPane.showMessageDialog(this, scrollPane, "Historique des mouvements", JOptionPane.INFORMATION_MESSAGE);
+            TTPCDialogMouvement dialog = new TTPCDialogMouvement(
+        	    "Mouvements de : " + selectedAnimal.getNom(),
+        	    table,
+        	    600,
+        	    350
+        	);
+        	dialog.setVisible(true);
+
         });
 
 
@@ -212,11 +254,16 @@ public class MouvementPanel extends JPanel {
         }
 
         int modelRow = table.convertRowIndexToModel(row);
-        int animalId = (int) tableModel.getValueAt(modelRow, 3); // Colonne "ID" de l'animal (index à adapter)
-        List<Mouvement> mouvements = dbManager.getMouvementsParAnimal(animalId);
+        Object idEntreeObj = tableModel.getValueAt(modelRow, 0); // ID_Entrée
+        Object idSortieObj = tableModel.getValueAt(modelRow, 1); // ID_Sortie
+        
+        boolean hasEntree = idEntreeObj != null;
+        boolean hasSortie = idSortieObj != null;
 
-        boolean hasEntree = mouvements.stream().anyMatch(m -> "entrée".equalsIgnoreCase(m.getTypeMouvement()));
-        boolean hasSortie = mouvements.stream().anyMatch(m -> "sortie".equalsIgnoreCase(m.getTypeMouvement()));
+        if (!hasEntree && !hasSortie) {
+            showMessage("Aucun mouvement associé à cette ligne.");
+            return;
+        }
 
         if (hasEntree && hasSortie) {
             String[] choix = {"Supprimer l'entrée", "Supprimer la sortie", "Annuler"};
@@ -232,20 +279,13 @@ public class MouvementPanel extends JPanel {
             );
 
             if (reponse == 0) { // Supprimer l'entrée
-                Mouvement entree = mouvements.stream().filter(m -> "entrée".equalsIgnoreCase(m.getTypeMouvement())).findFirst().orElse(null);
-                if (entree != null) {
-                    dbManager.deleteMouvement(entree.getId());
-                }
+                dbManager.deleteMouvement(Integer.parseInt(idEntreeObj.toString()));
             } else if (reponse == 1) { // Supprimer la sortie
-                Mouvement sortie = mouvements.stream().filter(m -> "sortie".equalsIgnoreCase(m.getTypeMouvement())).findFirst().orElse(null);
-                if (sortie != null) {
-                    dbManager.deleteMouvement(sortie.getId());
-                }
-            } else {
-                return; // Annulé
+                dbManager.deleteMouvement(Integer.parseInt(idSortieObj.toString()));
             }
 
         } else if (hasEntree) {
+        	int idEntree = Integer.parseInt(idEntreeObj.toString());
             int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "Supprimer cette entrée ?",
@@ -253,10 +293,11 @@ public class MouvementPanel extends JPanel {
                 JOptionPane.YES_NO_OPTION
             );
             if (confirm == JOptionPane.YES_OPTION) {
-                Mouvement entree = mouvements.stream().filter(m -> "entrée".equalsIgnoreCase(m.getTypeMouvement())).findFirst().orElse(null);
-                if (entree != null) dbManager.deleteMouvement(entree.getId());
+                dbManager.deleteMouvement(idEntree);
             }
+
         } else if (hasSortie) {
+        	int idSortie = Integer.parseInt(idSortieObj.toString());
             int confirm = JOptionPane.showConfirmDialog(
                 this,
                 "Supprimer cette sortie ?",
@@ -264,15 +305,13 @@ public class MouvementPanel extends JPanel {
                 JOptionPane.YES_NO_OPTION
             );
             if (confirm == JOptionPane.YES_OPTION) {
-                Mouvement sortie = mouvements.stream().filter(m -> "sortie".equalsIgnoreCase(m.getTypeMouvement())).findFirst().orElse(null);
-                if (sortie != null) dbManager.deleteMouvement(sortie.getId());
+                dbManager.deleteMouvement(idSortie);
             }
         }
 
         updateMouvementTable();
         showMessage("Mise à jour effectuée.");
     }
-
 
     public void rafraichirListeAnimaux() {
         animalComboBox.removeAllItems();
@@ -289,8 +328,6 @@ public class MouvementPanel extends JPanel {
 
         animalComboBox.addItemListener(e -> updateTypeOptions());
     }
-
-
 
     private void updateTypeOptions() {
     	//System.out.println("UpdateTypeOptions");
@@ -313,38 +350,45 @@ public class MouvementPanel extends JPanel {
 
     private void ajouterMouvement() {
         Animal animal = (Animal) animalComboBox.getSelectedItem();
-        if (animal == null) return;
-
-        Date date = parseDateSafely(dateField.getText().trim());
-        if (date == null) {
-            showMessage("Format de date invalide.");
+        if (animal == null) {
+            showMessage("Veuillez sélectionner un animal.");
             return;
         }
 
-        String type = (String) typeBox.getSelectedItem();
+        String type = ((String) typeBox.getSelectedItem()).toLowerCase();
+        String dateStr = dateField.getText().trim();
+        Date sqlDate = null;
+        try {
+			sqlDate = TTPCDateParser.stringToSqlDate(dateStr);
+            System.out.println("Date SQL : " + sqlDate);
+        } catch (Exception e) {
+            System.out.println("Erreur de format : " + e.getMessage());
+        }
+        
+        boolean estDecede = decedeCheckBox.isSelected();
 
-        String destination = JOptionPane.showInputDialog(this,
-            "entrée".equals(type) ? "Provenance de l’animal :" : "Destination de l’animal :",
-            "Information", JOptionPane.PLAIN_MESSAGE);
+        if (dateStr.contains("_")) {
+            showMessage("Veuillez compléter la date.");
+            return;
+        }
+
+        // Préremplir la destination avec la provenance de l’animal
+        String defaultDestination = animal.getProvenance() != null ? animal.getProvenance() : "";
+        String destination = JOptionPane.showInputDialog(
+            this,
+            "Destination / provenance :",
+            defaultDestination
+        );
 
         if (destination == null || destination.trim().isEmpty()) {
-            showMessage("Champ requis !");
+            showMessage("La destination est requise.");
             return;
         }
 
-        boolean estDecede = "sortie".equalsIgnoreCase(type) && decedeCheckBox.isSelected();
-
-        Mouvement m = new Mouvement(animal.getId(), type, date, destination, estDecede);
+        Mouvement m = new Mouvement(animal.getId(), type, sqlDate, destination.trim(), estDecede);
         dbManager.ajouterMouvement(m);
-
-        if (estDecede) {
-            dbManager.mettreAJourStatutDeces(animal.getId(), true);
-        }
-
         updateMouvementTable();
-        clearForm();
-        rafraichirListeAnimaux();
-        showMessage("Mouvement ajouté !");
+        showMessage("Mouvement ajouté avec succès.");
     }
 
     public Mouvement getMouvementFormData() {
@@ -406,6 +450,15 @@ public class MouvementPanel extends JPanel {
         }
 
         table.setModel(tableModel);
+     // Cacher les colonnes ID_Entrée (index 0) et ID_Sortie (index 1)
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setPreferredWidth(0);
+
+        table.getColumnModel().getColumn(1).setMinWidth(0);
+        table.getColumnModel().getColumn(1).setMaxWidth(0);
+        table.getColumnModel().getColumn(1).setPreferredWidth(0);
+
     }
 
     public void clearForm() {
@@ -422,7 +475,6 @@ public class MouvementPanel extends JPanel {
         decedeCheckBox.setVisible(false);
     }
 
-
     public void showMessage(String msg) {
         JOptionPane.showMessageDialog(this, msg);
     }
@@ -431,10 +483,10 @@ public class MouvementPanel extends JPanel {
         addButton.addActionListener(listener);
     }
     
-    private void modifierSelection() {
+    private void modifierSelection() throws ParseException {
         int row = table.getSelectedRow();
         if (row == -1) {
-            showMessage("Veuillez selectionner une ligne.");
+            showMessage("Sélectionnez une ligne.");
             return;
         }
 
@@ -445,93 +497,70 @@ public class MouvementPanel extends JPanel {
         boolean hasEntree = idEntreeObj != null;
         boolean hasSortie = idSortieObj != null;
 
-        int mouvementId = -1;
-        String type = "";
+        if (!hasEntree && !hasSortie) {
+            showMessage("Aucun mouvement sélectionné.");
+            return;
+        }
+
+        String[] options = {"Modifier l'entrée", "Modifier la sortie", "Annuler"};
+        int choix = 0;
 
         if (hasEntree && hasSortie) {
-            Object[] options = {"Modifier entree", "Modifier sortie", "Annuler"};
-            int choix = JOptionPane.showOptionDialog(
+            choix = JOptionPane.showOptionDialog(
                 this,
-                "Quel mouvement voulez-vous modifier ?",
-                "Modification mouvement",
+                "Quel mouvement souhaitez-vous modifier ?",
+                "Modifier un mouvement",
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 options,
                 options[0]
             );
-
-            if (choix == 0) {
-                mouvementId = (int) idEntreeObj;
-                type = "entree";
-            } else if (choix == 1) {
-                mouvementId = (int) idSortieObj;
-                type = "sortie";
-            } else {
-                return; // annule
-            }
-
-        } else if (hasEntree) {
-            mouvementId = (int) idEntreeObj;
-            type = "entree";
+            if (choix == 2) return;
         } else if (hasSortie) {
-            mouvementId = (int) idSortieObj;
-            type = "sortie";
-        } else {
-            showMessage("Aucun mouvement a modifier.");
-            return;
+            choix = 1;
         }
 
-        Mouvement m = dbManager.getMouvementById(mouvementId);
+        int id = choix == 0
+            ? Integer.parseInt(idEntreeObj.toString())
+            : Integer.parseInt(idSortieObj.toString());
+
+        Mouvement m = dbManager.getMouvementById(id);
         if (m == null) {
             showMessage("Mouvement introuvable.");
             return;
         }
 
-        Animal animal = dbManager.getAnimalById(m.getAnimalId());
-        if (animal == null) {
-            showMessage("Animal introuvable.");
-            return;
-        }
+        JTextField dateField = new JTextField(m.getDateMouvement().toString());
+        JCheckBox decedeBox = new JCheckBox("Décédé", m.isDecede());
+        JTextField destinationField = new JTextField(m.getDestination());
+        if (hasEntree && !hasSortie) {
+        	destinationField = new JTextField(dbManager.getAnimalById(m.getAnimalId()).getProvenance());
+        } 
+        
 
         JPanel panel = new JPanel(new GridLayout(0, 2, 10, 10));
+        panel.add(new JLabel("Date (JJ/MM/AAAA) :")); panel.add(dateField);
+        panel.add(new JLabel("Décédé ?")); panel.add(decedeBox);
+        panel.add(new JLabel("Destination / provenance :")); panel.add(destinationField);
 
-        JTextField dateField = new JTextField(new SimpleDateFormat("dd/MM/yyyy").format(m.getDateMouvement()));
-        JTextField destinationField = new JTextField(m.getDestination() != null ? m.getDestination() : "");
-        JCheckBox decedeBox = new JCheckBox("Decede");
-        decedeBox.setVisible("sortie".equalsIgnoreCase(type));
-        if ("sortie".equalsIgnoreCase(type)) {
-            decedeBox.setSelected(animal.isDecede());
-        }
-
-        panel.add(new JLabel("Date (JJ/MM/AAAA) :"));
-        panel.add(dateField);
-        panel.add(new JLabel(type.equals("entree") ? "Provenance :" : "Destination :"));
-        panel.add(destinationField);
-        if ("sortie".equalsIgnoreCase(type)) {
-            panel.add(new JLabel(""));
-            panel.add(decedeBox);
-        }
-
-        int res = JOptionPane.showConfirmDialog(this, panel, "Modifier " + type, JOptionPane.OK_CANCEL_OPTION);
+        int res = JOptionPane.showConfirmDialog(this, panel, "Modifier Mouvement", JOptionPane.OK_CANCEL_OPTION);
         if (res == JOptionPane.OK_OPTION) {
-            java.sql.Date newDate = parseDateSafely(dateField.getText());
-            if (newDate == null) {
-                showMessage("Format de date invalide.");
+            String date = dateField.getText().trim();
+            boolean decede = decedeBox.isSelected();
+            String destination = destinationField.getText().trim();
+
+            if (date.isEmpty() || destination.isEmpty()) {
+                showMessage("Champs requis.");
                 return;
             }
 
-            m.setDateMouvement(newDate);
-            m.setDestination(destinationField.getText().trim());
-
-            dbManager.updateMouvement(m);
-
-            if ("sortie".equalsIgnoreCase(type)) {
-                dbManager.mettreAJourStatutDeces(animal.getId(), decedeBox.isSelected());
-            }
+            Mouvement updated = new Mouvement(m.getAnimalId(), m.getTypeMouvement(), TTPCDateParser.stringToSqlDate(date), destination, decede);
+            updated.setId(m.getId());
+            dbManager.updateMouvement(updated);
 
             updateMouvementTable();
-            showMessage("Mouvement " + type + " modifie !");
+            showMessage("Mouvement modifié !");
         }
     }
     
@@ -559,10 +588,6 @@ public class MouvementPanel extends JPanel {
         }
     }
 
-    private String formatDate(java.sql.Date date) {
-        return new SimpleDateFormat("dd/MM/yyyy").format(date);
-    }
-    
     private void importerCSV() {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Importer mouvements depuis un fichier CSV");
@@ -578,42 +603,72 @@ public class MouvementPanel extends JPanel {
 
                 while ((line = br.readLine()) != null) {
                     if (isFirstLine) {
-                        isFirstLine = false; // skip header
+                        isFirstLine = false;
                         continue;
                     }
 
-                    String[] parts = line.split(",");
-                    if (parts.length < 5) continue;
+                    String[] parts = line.split(",", -1); // garder les champs vides
+
+                    if (parts.length < 11) continue;
 
                     try {
-                        int animalId = Integer.parseInt(parts[1]);
-                        String type = parts[3].trim();
-                        java.sql.Date date = parseDateSafely(parts[4]);
+                        // Colonne "ID Animal" (numeroId)
+                        String numeroId = parts[5].trim();
+                        if (numeroId.isEmpty()) continue;
 
-                        String destination = parts.length > 5 ? parts[5].trim() : "";
-                        boolean decede = parts.length > 6 && parts[6].trim().equalsIgnoreCase("oui");
-
-                        Mouvement m = new Mouvement(animalId, type, date);
-                        m.setDestination(destination);
-                        dbManager.ajouterMouvement(m);
-
-                        if ("sortie".equalsIgnoreCase(type)) {
-                            dbManager.mettreAJourStatutDeces(animalId, decede);
+                        Animal a = dbManager.getAnimalByNumeroId(numeroId);
+                        if (a == null) {
+                            System.out.println("Animal introuvable : " + numeroId);
+                            continue;
                         }
 
-                        imported++;
+                        int animalId = a.getId();
+
+                        // Entrée
+                        String dateEntreeStr = parts[7].trim();
+                        if (!dateEntreeStr.isEmpty()) {
+                            Date dateEntree = TTPCDateParser.stringToSqlDate(dateEntreeStr);
+                            if (dateEntree != null) {
+                                Mouvement entree = new Mouvement(animalId, "entrée", dateEntree, parts[8].trim(), false);
+                                dbManager.ajouterMouvement(entree);
+                                System.out.println("Entrée ajoutée pour animal ID " + animalId);
+                                imported++;
+                            } else {
+                                System.out.println("→ Date entrée invalide : " + dateEntreeStr);
+                            }
+                        }
+
+                        // Sortie
+                        String dateSortieStr = parts[9].trim();
+                        if (!dateSortieStr.isEmpty()) {
+                            Date dateSortie = TTPCDateParser.stringToSqlDate(dateSortieStr);
+                            if (dateSortie != null) {
+                                boolean decede = parts.length > 11 && parts[11].trim().equalsIgnoreCase("oui");
+                                Mouvement sortie = new Mouvement(animalId, "sortie", dateSortie, parts[10].trim(), decede);
+                                dbManager.ajouterMouvement(sortie);
+                                dbManager.mettreAJourStatutDeces(animalId, decede);
+                                System.out.println("Sortie ajoutée pour animal ID " + animalId);
+                                imported++;
+                            } else {
+                                System.out.println("→ Date sortie invalide : " + dateSortieStr);
+                            }
+                        }
+
                     } catch (Exception ex) {
-                        System.out.println("Erreur ligne ignorée : " + line);
+                        System.out.println("Erreur ligne CSV : " + ex.getMessage());
+                        // continue sans planter
                     }
                 }
 
                 updateMouvementTable();
-                showMessage(imported + " mouvements importés !");
+                showMessage(imported + " mouvements importés avec succès.");
+
             } catch (IOException e) {
-                showMessage("Erreur de lecture du fichier CSV : " + e.getMessage());
+                showMessage("Erreur lecture fichier : " + e.getMessage());
             }
         }
     }
+
 
     private void exporterCSV() {
         JFileChooser chooser = new JFileChooser();
@@ -642,14 +697,11 @@ public class MouvementPanel extends JPanel {
                     }
                     pw.println();
                 }
-
-                showMessage("Export terminé : " + file.getName());
             } catch (IOException e) {
                 showMessage("Erreur export CSV : " + e.getMessage());
             }
         }
     }
-
 
 }
 
