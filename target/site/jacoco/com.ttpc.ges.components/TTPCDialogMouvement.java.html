@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TTPCDialogMouvement.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TTPC-GES</a> &gt; <a href="index.source.html" class="el_package">com.ttpc.ges.components</a> &gt; <span class="el_source">TTPCDialogMouvement.java</span></div><h1>TTPCDialogMouvement.java</h1><pre class="source lang-java linenums">package com.ttpc.ges.components;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.TableModel;
+
+public class TTPCDialogMouvement extends JDialog {
+
+    public TTPCDialogMouvement(String titre, JTable table, int largeur, int hauteur) {
+<span class="nc" id="L14">        super((Frame) null, titre, true);</span>
+
+<span class="nc" id="L16">        setSize(largeur, hauteur);</span>
+<span class="nc" id="L17">        setMinimumSize(new Dimension(400, 250));</span>
+<span class="nc" id="L18">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L19">        setDefaultCloseOperation(DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L20">        setResizable(true);</span>
+
+<span class="nc" id="L22">        getContentPane().setLayout(new BorderLayout(10, 10));</span>
+<span class="nc" id="L23">        getContentPane().setBackground(new Color(245, 250, 255));</span>
+
+<span class="nc" id="L25">        JScrollPane scroll = new JScrollPane(table);</span>
+<span class="nc" id="L26">        JPanel mainPanel = new JPanel(new BorderLayout());</span>
+<span class="nc" id="L27">        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));</span>
+<span class="nc" id="L28">        mainPanel.setOpaque(false);</span>
+<span class="nc" id="L29">        mainPanel.add(scroll, BorderLayout.CENTER);</span>
+
+<span class="nc" id="L31">        JButton closeButton = new JButton(&quot;Fermer&quot;);</span>
+<span class="nc" id="L32">        closeButton.addActionListener(e -&gt; dispose());</span>
+
+<span class="nc" id="L34">        JButton exportButton = new JButton(&quot;Exporter CSV&quot;);</span>
+<span class="nc" id="L35">        exportButton.addActionListener(e -&gt; exporterCSV(table));</span>
+
+<span class="nc" id="L37">        JPanel bottomBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));</span>
+<span class="nc" id="L38">        bottomBar.setOpaque(false);</span>
+<span class="nc" id="L39">        bottomBar.add(exportButton);</span>
+<span class="nc" id="L40">        bottomBar.add(closeButton);</span>
+
+<span class="nc" id="L42">        getContentPane().add(mainPanel, BorderLayout.CENTER);</span>
+<span class="nc" id="L43">        getContentPane().add(bottomBar, BorderLayout.SOUTH);</span>
+<span class="nc" id="L44">    }</span>
+
+    private void exporterCSV(JTable table) {
+<span class="nc" id="L47">        JFileChooser chooser = new JFileChooser();</span>
+<span class="nc" id="L48">        chooser.setDialogTitle(&quot;Exporter les mouvements en CSV&quot;);</span>
+<span class="nc" id="L49">        chooser.setFileFilter(new FileNameExtensionFilter(&quot;Fichiers CSV&quot;, &quot;csv&quot;));</span>
+
+<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {</span>
+<span class="nc" id="L52">            File file = chooser.getSelectedFile();</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">            if (!file.getName().toLowerCase().endsWith(&quot;.csv&quot;)) {</span>
+<span class="nc" id="L54">                file = new File(file.getAbsolutePath() + &quot;.csv&quot;);</span>
+            }
+
+<span class="nc" id="L57">            try (PrintWriter pw = new PrintWriter(new FileWriter(file))) {</span>
+<span class="nc" id="L58">                TableModel model = table.getModel();</span>
+                // En-têtes
+<span class="nc bnc" id="L60" title="All 2 branches missed.">                for (int i = 0; i &lt; model.getColumnCount(); i++) {</span>
+<span class="nc" id="L61">                    pw.print(model.getColumnName(i));</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">                    if (i &lt; model.getColumnCount() - 1) pw.print(&quot;,&quot;);</span>
+                }
+<span class="nc" id="L64">                pw.println();</span>
+
+                // Données
+<span class="nc bnc" id="L67" title="All 2 branches missed.">                for (int row = 0; row &lt; model.getRowCount(); row++) {</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">                    for (int col = 0; col &lt; model.getColumnCount(); col++) {</span>
+<span class="nc" id="L69">                        Object val = model.getValueAt(row, col);</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">                        pw.print(val != null ? val.toString().replace(&quot;,&quot;, &quot; &quot;) : &quot;&quot;);</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">                        if (col &lt; model.getColumnCount() - 1) pw.print(&quot;,&quot;);</span>
+                    }
+<span class="nc" id="L73">                    pw.println();</span>
+                }
+
+<span class="nc" id="L76">                JOptionPane.showMessageDialog(this, &quot;Export terminé : &quot; + file.getAbsolutePath());</span>
+
+<span class="nc" id="L78">            } catch (Exception ex) {</span>
+<span class="nc" id="L79">                JOptionPane.showMessageDialog(this, &quot;Erreur : &quot; + ex.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L80">            }</span>
+        }
+<span class="nc" id="L82">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

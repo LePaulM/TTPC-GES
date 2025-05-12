@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DatabaseManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TTPC-GES</a> &gt; <a href="index.source.html" class="el_package">com.ttpc.ges.model</a> &gt; <span class="el_source">DatabaseManager.java</span></div><h1>DatabaseManager.java</h1><pre class="source lang-java linenums">package com.ttpc.ges.model;
+
+import java.io.File;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+
+public class DatabaseManager {
+
+	private static final String DB_PATH;
+
+	static {
+<span class="fc" id="L19">	    String userDir = System.getProperty(&quot;user.home&quot;);</span>
+<span class="fc" id="L20">	    File dbFolder = new File(userDir, &quot;TTPC-GES&quot;);</span>
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">	    if (!dbFolder.exists()) dbFolder.mkdirs();</span>
+
+<span class="fc" id="L23">	    DB_PATH = dbFolder.getAbsolutePath() + File.separator + &quot;ttpc_ges.db&quot;;</span>
+<span class="fc" id="L24">	    System.out.println(&quot;Initialisation de DatabaseManager...&quot;);</span>
+<span class="fc" id="L25">	    System.out.println(&quot;DB_PATH = &quot; + DB_PATH);</span>
+
+<span class="fc" id="L27">	}</span>
+
+<span class="fc" id="L29">    public DatabaseManager() {</span>
+    	try {
+<span class="fc" id="L31">    		Class.forName(&quot;org.sqlite.JDBC&quot;);</span>
+    	
+<span class="fc" id="L33">	        try (Connection conn = connect(); Statement stmt = conn.createStatement()) {</span>
+
+	
+	        	try {
+<span class="fc" id="L37">    stmt.executeUpdate(&quot;&quot;&quot;</span>
+	        		    CREATE TABLE IF NOT EXISTS animaux (
+	        		        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	        		        numeroId TEXT NOT NULL,
+	        		        nom TEXT NOT NULL,
+	        		        espece TEXT,
+	        		        sexe TEXT,
+	        		        age INTEGER,
+	        		        provenance TEXT,
+	        		        description TEXT,
+	        		        decede BOOLEAN DEFAULT 0
+	        		    )
+	        		&quot;&quot;&quot;);
+<span class="nc" id="L50">} catch (SQLException e) {</span>
+<span class="nc" id="L51">    JOptionPane.showMessageDialog(null,</span>
+<span class="nc" id="L52">        &quot;Erreur SQL : &quot; + e.getMessage(),</span>
+        &quot;Erreur Base de Données&quot;,
+        JOptionPane.ERROR_MESSAGE);
+<span class="fc" id="L55">}</span>
+	
+	            try {
+<span class="fc" id="L58">    stmt.executeUpdate(&quot;&quot;&quot;</span>
+					CREATE TABLE IF NOT EXISTS mouvements (
+					    id INTEGER PRIMARY KEY AUTOINCREMENT,
+					    animalId INTEGER NOT NULL,
+					    typeMouvement TEXT NOT NULL,
+					    dateMouvement DATE NOT NULL,
+					    destination TEXT,
+					    isDecede BOOLEAN DEFAULT 0,
+					    FOREIGN KEY (animalId) REFERENCES animaux(id) ON DELETE CASCADE
+					)
+	                &quot;&quot;&quot;);
+<span class="nc" id="L69">} catch (SQLException e) {</span>
+<span class="nc" id="L70">    JOptionPane.showMessageDialog(null,</span>
+<span class="nc" id="L71">        &quot;Erreur SQL : &quot; + e.getMessage(),</span>
+        &quot;Erreur Base de Données&quot;,
+        JOptionPane.ERROR_MESSAGE);
+<span class="fc" id="L74">}</span>
+	
+<span class="nc" id="L76">	        } catch (SQLException e) {</span>
+<span class="nc" id="L77">	            System.out.println(&quot;Erreur lors de l'initialisation de la base :&quot;);</span>
+<span class="nc" id="L78">	            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="fc" id="L79">	        }</span>
+<span class="nc" id="L80">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L81">            System.out.println(&quot;[ERREUR] Driver SQLite non trouvé.&quot;);</span>
+<span class="nc" id="L82">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="fc" id="L83">        }</span>
+<span class="fc" id="L84">    }</span>
+
+    public Connection connect() throws SQLException {
+<span class="fc" id="L87">        return DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+    }
+
+    public void verifierBase() {
+<span class="nc" id="L91">        System.out.println(&quot;[INFO] Vérification de la base...&quot;);</span>
+<span class="nc" id="L92">        System.out.println(&quot;[INFO] Chemin de la base : &quot; + DB_PATH);</span>
+<span class="nc" id="L93">        try (Connection conn = connect()) {</span>
+<span class="nc" id="L94">            System.out.println(&quot;[OK] Connexion établie&quot;);</span>
+<span class="nc" id="L95">            Statement stmt = conn.createStatement();</span>
+
+<span class="nc" id="L97">            ResultSet rs = stmt.executeQuery(&quot;SELECT count(*) FROM sqlite_master WHERE type='table' AND name='animaux'&quot;);</span>
+<span class="nc bnc" id="L98" title="All 4 branches missed.">            if (rs.next() &amp;&amp; rs.getInt(1) &gt; 0) {</span>
+<span class="nc" id="L99">                System.out.println(&quot;[OK] Table 'animaux' trouvée&quot;);</span>
+<span class="nc" id="L100">                ResultSet rs2 = stmt.executeQuery(&quot;SELECT COUNT(*) FROM animaux&quot;);</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">                if (rs2.next()) {</span>
+<span class="nc" id="L102">                    System.out.println(&quot;[INFO] Nombre d'animaux : &quot; + rs2.getInt(1));</span>
+                }
+<span class="nc" id="L104">                rs2.close();</span>
+<span class="nc" id="L105">            } else {</span>
+<span class="nc" id="L106">                System.out.println(&quot;[WARN] Table 'animaux' non trouvée&quot;);</span>
+            }
+<span class="nc" id="L108">            rs.close();</span>
+<span class="nc" id="L109">        } catch (Exception e) {</span>
+<span class="nc" id="L110">            System.out.println(&quot;[ERREUR] Connexion ou lecture impossible :&quot;);</span>
+<span class="nc" id="L111">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L112">        }</span>
+<span class="nc" id="L113">    }</span>
+    
+    public void ajouterAnimal(Animal animal) {
+<span class="nc" id="L116">        String sql = &quot;&quot;&quot;</span>
+            INSERT INTO animaux(numeroId, nom, espece, sexe, age, provenance, description, decede)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        &quot;&quot;&quot;;
+
+<span class="nc" id="L121">        try (Connection conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+<span class="nc" id="L122">             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {</span>
+
+<span class="nc" id="L124">            pstmt.setString(1, animal.getNumeroId());</span>
+<span class="nc" id="L125">            pstmt.setString(2, animal.getNom());</span>
+<span class="nc" id="L126">            pstmt.setString(3, animal.getEspece());</span>
+<span class="nc" id="L127">            pstmt.setString(4, String.valueOf(animal.getSexe()));</span>
+<span class="nc" id="L128">            pstmt.setInt(5, animal.getAge());</span>
+<span class="nc" id="L129">            pstmt.setString(6, animal.getProvenance());</span>
+<span class="nc" id="L130">            pstmt.setString(7, animal.getDescription());</span>
+<span class="nc" id="L131">            pstmt.setBoolean(8, animal.isDecede());</span>
+
+<span class="nc" id="L133">            int affectedRows = pstmt.executeUpdate();</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">            if (affectedRows == 0) {</span>
+<span class="nc" id="L135">                System.err.println(&quot;[ERREUR] Aucune ligne insérée.&quot;);</span>
+<span class="nc" id="L136">                return;</span>
+            }
+
+<span class="nc" id="L139">            try (ResultSet rs = pstmt.getGeneratedKeys()) {</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">                if (rs.next()) {</span>
+<span class="nc" id="L141">                    int id = rs.getInt(1);</span>
+<span class="nc" id="L142">                    animal.setId(id);</span>
+<span class="nc" id="L143">                    System.out.println(&quot;ID généré : &quot; + id);</span>
+<span class="nc" id="L144">                } else {</span>
+<span class="nc" id="L145">                    System.err.println(&quot;[ERREUR] Impossible de récupérer l'ID généré.&quot;);</span>
+                }
+            }
+
+<span class="nc bnc" id="L149" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L150">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L151">        }</span>
+<span class="nc" id="L152">    }</span>
+
+
+
+    public List&lt;Animal&gt; getTousLesAnimaux() {
+<span class="fc" id="L157">        List&lt;Animal&gt; animaux = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L158">        String sql = &quot;SELECT * FROM animaux&quot;;</span>
+
+<span class="fc" id="L160">        try (Connection conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+<span class="fc" id="L161">             Statement stmt = conn.createStatement();</span>
+<span class="fc" id="L162">             ResultSet rs = stmt.executeQuery(sql)) {</span>
+
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L165">                Animal animal = new Animal(</span>
+<span class="nc" id="L166">                        rs.getInt(&quot;id&quot;),</span>
+<span class="nc" id="L167">                        rs.getString(&quot;numeroId&quot;),</span>
+<span class="nc" id="L168">                        rs.getString(&quot;nom&quot;),</span>
+<span class="nc" id="L169">                        rs.getString(&quot;espece&quot;),</span>
+<span class="nc" id="L170">                        rs.getString(&quot;sexe&quot;).charAt(0),</span>
+<span class="nc" id="L171">                        rs.getInt(&quot;age&quot;),</span>
+<span class="nc" id="L172">                        rs.getString(&quot;provenance&quot;),</span>
+<span class="nc" id="L173">                        rs.getString(&quot;description&quot;),</span>
+<span class="nc" id="L174">                        rs.getBoolean(&quot;decede&quot;)</span>
+                );
+<span class="nc" id="L176">                animaux.add(animal);</span>
+<span class="nc" id="L177">            }</span>
+<span class="nc" id="L178">        } catch (SQLException e) {</span>
+<span class="nc" id="L179">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="fc" id="L180">        }</span>
+<span class="fc" id="L181">        return animaux;</span>
+    }
+
+    public List&lt;Mouvement&gt; getMouvementsParAnimal(int idAnimal) {
+<span class="nc" id="L185">        List&lt;Mouvement&gt; mouvements = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L186">        String sql = &quot;SELECT * FROM mouvements WHERE animalId = ? ORDER BY dateMouvement&quot;;</span>
+
+<span class="nc" id="L188">        try (Connection conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+<span class="nc" id="L189">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L191">            pstmt.setInt(1, idAnimal);</span>
+<span class="nc" id="L192">            try (ResultSet rs = pstmt.executeQuery()) {</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">                while (rs.next()) {</span>
+<span class="nc" id="L194">                    Mouvement m = new Mouvement(</span>
+<span class="nc" id="L195">                            rs.getInt(&quot;id&quot;),</span>
+<span class="nc" id="L196">                            rs.getInt(&quot;animalId&quot;),</span>
+<span class="nc" id="L197">                            rs.getString(&quot;typeMouvement&quot;),</span>
+<span class="nc" id="L198">                            rs.getDate(&quot;dateMouvement&quot;),</span>
+<span class="nc" id="L199">                            rs.getBoolean(&quot;isDecede&quot;),</span>
+<span class="nc" id="L200">                            rs.getString(&quot;destination&quot;)</span>
+                    );
+<span class="nc" id="L202">                    mouvements.add(m);</span>
+<span class="nc" id="L203">                }</span>
+            }
+
+<span class="nc" id="L206">        } catch (SQLException e) {</span>
+<span class="nc" id="L207">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L208">            JOptionPane.showMessageDialog(null,</span>
+                &quot;Une erreur est survenue lors de la récupération des mouvements.&quot;,
+                &quot;Erreur base de données&quot;,
+                JOptionPane.ERROR_MESSAGE);
+<span class="nc" id="L212">        }</span>
+
+<span class="nc" id="L214">        return mouvements;</span>
+    }
+
+    
+    public List&lt;Mouvement&gt; getTousLesMouvements() {
+<span class="fc" id="L219">        List&lt;Mouvement&gt; mouvements = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L220">        String sql = &quot;SELECT * FROM mouvements ORDER BY dateMouvement&quot;;</span>
+
+<span class="fc" id="L222">        try (Connection conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+<span class="fc" id="L223">             Statement stmt = conn.createStatement();</span>
+<span class="fc" id="L224">             ResultSet rs = stmt.executeQuery(sql)) {</span>
+
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L227">                Mouvement m = new Mouvement(</span>
+<span class="nc" id="L228">                    rs.getInt(&quot;id&quot;),</span>
+<span class="nc" id="L229">                    rs.getInt(&quot;animalId&quot;),</span>
+<span class="nc" id="L230">                    rs.getString(&quot;typeMouvement&quot;),</span>
+<span class="nc" id="L231">                    rs.getDate(&quot;dateMouvement&quot;),</span>
+<span class="nc" id="L232">                    rs.getBoolean(&quot;isDecede&quot;),</span>
+<span class="nc" id="L233">                    rs.getString(&quot;destination&quot;)</span>
+                );
+<span class="nc" id="L235">                mouvements.add(m);</span>
+                
+<span class="nc" id="L237">                System.out.println(&quot;Mouvement trouvé pour animal ID &quot; + rs.getInt(&quot;animalId&quot;));</span>
+
+<span class="nc" id="L239">            }</span>
+
+<span class="nc" id="L241">        } catch (SQLException e) {</span>
+<span class="nc" id="L242">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="fc" id="L243">        }</span>
+
+<span class="fc" id="L245">        return mouvements;</span>
+    }
+
+
+
+    public void ajouterMouvement(Mouvement m) {
+<span class="nc" id="L251">        String sql = &quot;INSERT INTO mouvements(animalId, typeMouvement, dateMouvement, destination, isDecede) &quot; +</span>
+                     &quot;VALUES(?, ?, ?, ?, ?)&quot;;
+
+<span class="nc" id="L254">        try (Connection conn = connect();</span>
+<span class="nc" id="L255">             PreparedStatement stmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L257">            stmt.setInt(1, m.getAnimalId());</span>
+<span class="nc" id="L258">            stmt.setString(2, m.getTypeMouvement());</span>
+<span class="nc" id="L259">            stmt.setDate(3, m.getDateMouvement());</span>
+<span class="nc" id="L260">            stmt.setString(4, m.getDestination());</span>
+<span class="nc" id="L261">            stmt.setBoolean(5, m.isDecede());</span>
+
+<span class="nc" id="L263">            stmt.executeUpdate();</span>
+<span class="nc" id="L264">            System.out.println(&quot;Mouvement ajouté : &quot; + m);</span>
+
+<span class="nc" id="L266">        } catch (SQLException e) {</span>
+<span class="nc" id="L267">            System.err.println(&quot;Erreur lors de l'ajout du mouvement : &quot; + e.getMessage());</span>
+<span class="nc" id="L268">        }</span>
+<span class="nc" id="L269">    }</span>
+
+
+    
+    public void mettreAJourStatutDeces(int animalId, boolean estDecede) {
+<span class="nc" id="L274">        String sql = &quot;UPDATE animaux SET decede = ? WHERE id = ?&quot;;</span>
+
+<span class="nc" id="L276">        try (Connection conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+<span class="nc" id="L277">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L279">            pstmt.setBoolean(1, estDecede);</span>
+<span class="nc" id="L280">            pstmt.setInt(2, animalId);</span>
+<span class="nc" id="L281">            pstmt.executeUpdate();</span>
+
+<span class="nc" id="L283">        } catch (SQLException e) {</span>
+<span class="nc" id="L284">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L285">        }</span>
+<span class="nc" id="L286">    }</span>
+
+    public Animal getAnimalById(int id) {
+<span class="nc" id="L289">        String sql = &quot;SELECT * FROM animaux WHERE id = ?&quot;;</span>
+<span class="nc" id="L290">        try (Connection conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+<span class="nc" id="L291">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L293">            pstmt.setInt(1, id);</span>
+<span class="nc" id="L294">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="nc bnc" id="L296" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L297">            	Animal a = new Animal(</span>
+<span class="nc" id="L298">            		    rs.getString(&quot;numeroId&quot;),</span>
+<span class="nc" id="L299">            		    rs.getString(&quot;nom&quot;),</span>
+<span class="nc" id="L300">            		    rs.getString(&quot;espece&quot;),</span>
+<span class="nc" id="L301">            		    rs.getString(&quot;sexe&quot;).charAt(0),</span>
+<span class="nc" id="L302">            		    rs.getInt(&quot;age&quot;),</span>
+<span class="nc" id="L303">            		    rs.getString(&quot;provenance&quot;),</span>
+<span class="nc" id="L304">            		    rs.getString(&quot;description&quot;),</span>
+<span class="nc" id="L305">            		    rs.getBoolean(&quot;decede&quot;)</span>
+            		);
+<span class="nc" id="L307">            		a.setId(rs.getInt(&quot;id&quot;)); // ← IMPORTANT</span>
+<span class="nc" id="L308">            		return a;</span>
+            }
+
+<span class="nc bnc" id="L311" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L312">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L313">        }</span>
+<span class="nc" id="L314">        return null;</span>
+    }
+    
+    public Animal getAnimalByNumeroId(String id) {
+<span class="nc" id="L318">        String sql = &quot;SELECT * FROM animaux WHERE numeroId = ?&quot;;</span>
+<span class="nc" id="L319">        try (Connection conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+<span class="nc" id="L320">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L322">            pstmt.setString(1, id);</span>
+<span class="nc" id="L323">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="nc bnc" id="L325" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L326">            	Animal a = new Animal(</span>
+<span class="nc" id="L327">            		    rs.getString(&quot;numeroId&quot;),</span>
+<span class="nc" id="L328">            		    rs.getString(&quot;nom&quot;),</span>
+<span class="nc" id="L329">            		    rs.getString(&quot;espece&quot;),</span>
+<span class="nc" id="L330">            		    rs.getString(&quot;sexe&quot;).charAt(0),</span>
+<span class="nc" id="L331">            		    rs.getInt(&quot;age&quot;),</span>
+<span class="nc" id="L332">            		    rs.getString(&quot;provenance&quot;),</span>
+<span class="nc" id="L333">            		    rs.getString(&quot;description&quot;),</span>
+<span class="nc" id="L334">            		    rs.getBoolean(&quot;decede&quot;)</span>
+            		);
+<span class="nc" id="L336">            		a.setId(rs.getInt(&quot;id&quot;)); // ← IMPORTANT</span>
+<span class="nc" id="L337">            		return a;</span>
+            }
+
+<span class="nc bnc" id="L340" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L341">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L342">        }</span>
+<span class="nc" id="L343">        return null;</span>
+    }
+    
+    public void updateAnimal(Animal a) {
+<span class="nc" id="L347">        String sql = &quot;UPDATE animaux SET numeroId=?, nom=?, espece=?, sexe=?, age=?, provenance=?, description=?, decede=? WHERE id=?&quot;;</span>
+<span class="nc" id="L348">        try (Connection conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+<span class="nc" id="L349">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="nc" id="L350">            pstmt.setString(1, a.getNumeroId());</span>
+<span class="nc" id="L351">            pstmt.setString(2, a.getNom());</span>
+<span class="nc" id="L352">            pstmt.setString(3, a.getEspece());</span>
+<span class="nc" id="L353">            pstmt.setString(4, String.valueOf(a.getSexe()));</span>
+<span class="nc" id="L354">            pstmt.setInt(5, a.getAge());</span>
+<span class="nc" id="L355">            pstmt.setString(6, a.getProvenance());</span>
+<span class="nc" id="L356">            pstmt.setString(7, a.getDescription());</span>
+<span class="nc" id="L357">            pstmt.setBoolean(8, a.isDecede());</span>
+<span class="nc" id="L358">            pstmt.executeUpdate();</span>
+<span class="nc" id="L359">        } catch (SQLException e) {</span>
+<span class="nc" id="L360">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L361">        }</span>
+<span class="nc" id="L362">    }</span>
+
+    public void updateMouvement(Mouvement mouvement) {
+<span class="nc" id="L365">        String sql = &quot;UPDATE mouvements SET animalId = ?, typeMouvement = ?, dateMouvement = ?, destination = ?, isDecede = ? WHERE id = ?&quot;;</span>
+
+<span class="nc" id="L367">        try (Connection conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+<span class="nc" id="L368">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L370">            pstmt.setInt(1, mouvement.getAnimalId());</span>
+<span class="nc" id="L371">            pstmt.setString(2, mouvement.getTypeMouvement());</span>
+<span class="nc" id="L372">            pstmt.setDate(3, mouvement.getDateMouvement());</span>
+<span class="nc" id="L373">            pstmt.setString(4, mouvement.getDestination());</span>
+<span class="nc" id="L374">            pstmt.setBoolean(5, mouvement.isDecede());</span>
+<span class="nc" id="L375">            pstmt.setInt(6, mouvement.getId());</span>
+
+<span class="nc" id="L377">            pstmt.executeUpdate();</span>
+
+<span class="nc" id="L379">        } catch (SQLException e) {</span>
+<span class="nc" id="L380">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L381">        }</span>
+<span class="nc" id="L382">    }</span>
+
+    
+    public void deleteAnimal(int id) {
+<span class="nc" id="L386">        String sql = &quot;DELETE FROM animaux WHERE id = ?&quot;;</span>
+
+<span class="nc" id="L388">        try (Connection conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+<span class="nc" id="L389">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+<span class="nc" id="L390">            pstmt.setInt(1, id);</span>
+<span class="nc" id="L391">            int affected = pstmt.executeUpdate();</span>
+<span class="nc bnc" id="L392" title="All 2 branches missed.">            if (affected &gt; 0) {</span>
+<span class="nc" id="L393">                System.out.println(&quot;Animal supprimé (id=&quot; + id + &quot;)&quot;);</span>
+            } else {
+<span class="nc" id="L395">                System.out.println(&quot;Aucun animal trouvé avec l'id &quot; + id);</span>
+            }
+<span class="nc" id="L397">        } catch (SQLException e) {</span>
+<span class="nc" id="L398">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L399">        }</span>
+<span class="nc" id="L400">    }</span>
+
+    
+    public void deleteMouvement(int id) {
+<span class="nc" id="L404">        String sql = &quot;DELETE FROM mouvements WHERE id = ?&quot;;</span>
+
+<span class="nc" id="L406">        try (Connection conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+<span class="nc" id="L407">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L409">            pstmt.setInt(1, id);</span>
+<span class="nc" id="L410">            pstmt.executeUpdate();</span>
+
+<span class="nc" id="L412">        } catch (SQLException e) {</span>
+<span class="nc" id="L413">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L414">        }</span>
+<span class="nc" id="L415">    }</span>
+        
+    public boolean estPresent(int animalId) {
+<span class="nc" id="L418">        List&lt;Mouvement&gt; mouvements = getMouvementsParAnimal(animalId);</span>
+<span class="nc bnc" id="L419" title="All 2 branches missed.">        if (mouvements.isEmpty()) return false;</span>
+
+<span class="nc" id="L421">        Mouvement dernier = mouvements.get(mouvements.size() - 1);</span>
+<span class="nc" id="L422">        return &quot;entree&quot;.equalsIgnoreCase(dernier.getTypeMouvement());</span>
+    }
+    
+    public static java.sql.Date parseDateSafely(String input) {
+<span class="nc bnc" id="L426" title="All 4 branches missed.">        if (input == null || input.trim().isEmpty()) return null;</span>
+
+<span class="nc" id="L428">        input = input.trim();</span>
+<span class="nc" id="L429">        SimpleDateFormat sdf = new SimpleDateFormat(&quot;dd/MM/yyyy&quot;);</span>
+<span class="nc" id="L430">        sdf.setLenient(false);</span>
+
+        try {
+            // Si c’est une vraie date JJ/MM/AAAA
+<span class="nc" id="L434">            java.util.Date parsed = sdf.parse(input);</span>
+<span class="nc" id="L435">            return new java.sql.Date(parsed.getTime());</span>
+
+<span class="nc" id="L437">        } catch (ParseException e) {</span>
+            try {
+                // Sinon, essaie de le parser comme un timestamp
+<span class="nc" id="L440">                long timestamp = Long.parseLong(input);</span>
+<span class="nc" id="L441">                return new java.sql.Date(timestamp);</span>
+<span class="nc" id="L442">            } catch (NumberFormatException ex) {</span>
+<span class="nc" id="L443">                System.out.println(&quot;Erreur parsing date : \&quot;&quot; + input + &quot;\&quot; n'est ni une date ni un timestamp.&quot;);</span>
+<span class="nc" id="L444">                return null;</span>
+            }
+        }
+    }
+    
+    public void supprimerAnimalEtMouvements(int idAnimal) {
+<span class="nc" id="L450">        String deleteMouvementsSQL = &quot;DELETE FROM mouvements WHERE animalId = ?&quot;;</span>
+<span class="nc" id="L451">        String deleteAnimalSQL = &quot;DELETE FROM animaux WHERE id = ?&quot;;</span>
+        
+<span class="nc" id="L453">        try (Connection conn = connect();</span>
+<span class="nc" id="L454">             PreparedStatement delMouv = conn.prepareStatement(deleteMouvementsSQL);</span>
+<span class="nc" id="L455">             PreparedStatement delAnimal = conn.prepareStatement(deleteAnimalSQL)) {</span>
+            
+<span class="nc" id="L457">            delMouv.setInt(1, idAnimal);</span>
+<span class="nc" id="L458">            delMouv.executeUpdate();</span>
+
+<span class="nc" id="L460">            delAnimal.setInt(1, idAnimal);</span>
+<span class="nc" id="L461">            delAnimal.executeUpdate();</span>
+
+<span class="nc" id="L463">            System.out.println(&quot;[INFO] Animal et mouvements supprimés pour ID=&quot; + idAnimal);</span>
+<span class="nc" id="L464">        } catch (SQLException e) {</span>
+<span class="nc" id="L465">            System.out.println(&quot;[ERREUR] Suppression animal+mouvements : &quot; + e.getMessage());</span>
+<span class="nc" id="L466">        }</span>
+<span class="nc" id="L467">    }</span>
+
+    public Mouvement getMouvementById(int id) {
+<span class="nc" id="L470">        String sql = &quot;SELECT * FROM mouvements WHERE id = ?&quot;;</span>
+<span class="nc" id="L471">        try (Connection conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + DB_PATH);</span>
+<span class="nc" id="L472">             PreparedStatement pstmt = conn.prepareStatement(sql)) {</span>
+
+<span class="nc" id="L474">            pstmt.setInt(1, id);</span>
+<span class="nc" id="L475">            ResultSet rs = pstmt.executeQuery();</span>
+
+<span class="nc bnc" id="L477" title="All 2 branches missed.">            if (rs.next()) {</span>
+<span class="nc" id="L478">                int animalId = rs.getInt(&quot;animalId&quot;);</span>
+<span class="nc" id="L479">                String type = rs.getString(&quot;typeMouvement&quot;);</span>
+<span class="nc" id="L480">                Date date = rs.getDate(&quot;dateMouvement&quot;);</span>
+<span class="nc" id="L481">                String destination = rs.getString(&quot;destination&quot;);</span>
+<span class="nc" id="L482">                boolean decede = rs.getBoolean(&quot;isDecede&quot;);</span>
+
+<span class="nc" id="L484">                return new Mouvement(animalId, type, date, destination, decede);</span>
+            }
+
+<span class="nc bnc" id="L487" title="All 4 branches missed.">        } catch (SQLException e) {</span>
+<span class="nc" id="L488">            System.out.println(&quot;[ERREUR] Impossible de recuperer le mouvement ID=&quot; + id);</span>
+<span class="nc" id="L489">            JOptionPane.showMessageDialog(null, &quot;Une erreur est survenue : &quot; + e.getMessage(), &quot;Erreur&quot;, JOptionPane.ERROR_MESSAGE);</span>
+<span class="nc" id="L490">        }</span>
+<span class="nc" id="L491">        return null;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

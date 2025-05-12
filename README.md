@@ -1,71 +1,34 @@
-# 🧠 TTPC-GES
+# TTPC-GES
 
-TTPC-GES est une application Java pour la gestion des projets du club TTPC. Elle fonctionne sous Windows (actuellement) et utilise Java 17 + Maven.
-
----
-
-## 🚀 Fonctionnalités
-
-- Interface graphique Java
-- Accès à une base de données (SQLite ou autre via JDBC)
-- Gestion de projets (CRUD)
-- Architecture propre et modulaire
+**TTPC-GES** est une application de gestion destinée à la pension féline et canine **Tendres Truffes**.  
+Elle permet de suivre les animaux accueillis, leurs mouvements d'entrée et de sortie, ainsi que d'importer/exporter les données au format CSV.
 
 ---
 
-## 🧱 Structure du projet
+## 🐾 Fonctionnalités principales
+
+- Ajout, modification et suppression d’animaux
+- Suivi des mouvements (entrée / sortie / décès)
+- Recherche rapide dans les tableaux
+- Import/export des données en CSV
+- Interface graphique claire en Java Swing
+- Champs de saisie intelligents (date, combobox, champs restreints)
+
+---
+
+## 🖥️ Installation
+
+1. Exécute le fichier `TTPC-GES-Setup.exe` *(installateur Windows généré avec Inno Setup)*
+2. Suis les instructions à l’écran
+3. Un raccourci vers **TTPC-GES** sera placé sur le bureau
+
+---
+
+## 🚀 Lancement manuel (développeurs)
+
+Si tu veux lancer l’application sans l’installateur :
 
 ```bash
-TTPC-GES/
-├── pom.xml
-├── src/
-│   ├── main/java/com/ttpc/ges/    # Code Java principal
-│   └── main/resources/            # Ressources (images, configs)
-│   └── test/java/com/ttpc/ges/    # Tests unitaires
-└── target/                        # Généré automatiquement au build
-```
-
----
-
-## Lancement 
- - Build
- -- mvn clean package
- - Launch
- -- java -jar target/ttpc-ges-1.0.0-jar-with-dependencies.jar
-
- ---
-
-## 📌 Stratégie de développement
-
- - 🔀 Branches
-main : stable (prod)
-
-dev : branche de développement
-
-feature/xxx : nouvelle fonctionnalité
-
-bugfix/xxx : correction de bug
-
-- 🧾 Convention de commit
-Utilise les conventional commits :
-
-Tag	Description
-feat:	nouvelle fonctionnalité
-fix:	correction de bug
-docs:	mise à jour de la documentation
-refactor:	refonte interne du code
-test:	ajout/modif de tests
-build:	build system / dépendances
-chore:	tâches de maintenance
-Exemples :
-git commit -m "feat: ajout du module de création de projet"
-git commit -m "fix: gestion des accents en UTF-8"
-
-- 🧮 Versioning
-Suivi via Semantic Versioning : MAJOR.MINOR.PATCH
-
-MAJOR = changements incompatibles
-
-MINOR = nouvelles features compatibles
-
-PATCH = corrections sans rupture
+cd TTPC-GES
+mvn clean package
+java -jar target/ttpc-ges-1.0.0-jar-with-dependencies.jar

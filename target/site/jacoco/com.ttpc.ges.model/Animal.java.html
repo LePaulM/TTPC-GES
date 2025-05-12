@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Animal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TTPC-GES</a> &gt; <a href="index.source.html" class="el_package">com.ttpc.ges.model</a> &gt; <span class="el_source">Animal.java</span></div><h1>Animal.java</h1><pre class="source lang-java linenums">package com.ttpc.ges.model;
+
+public class Animal {
+    private int id;
+    private String nom;
+	private String espece;
+    private char sexe;
+    private int age;
+    private String provenance;
+    private String description;
+    private boolean decede;
+    private String numeroId;
+
+    public Animal(String numeroId, String nom, String espece, char sexe, int age, String provenance, String description, boolean decede) {
+<span class="fc" id="L15">		super();</span>
+<span class="fc" id="L16">		this.nom = nom;</span>
+<span class="fc" id="L17">		this.espece = espece;</span>
+<span class="fc" id="L18">		this.sexe = sexe;</span>
+<span class="fc" id="L19">		this.age = age;</span>
+<span class="fc" id="L20">		this.provenance = provenance;</span>
+<span class="fc" id="L21">		this.description = description;</span>
+<span class="fc" id="L22">		this.decede = decede;</span>
+<span class="fc" id="L23">		this.numeroId = numeroId;</span>
+<span class="fc" id="L24">	}</span>
+
+<span class="fc" id="L26">	public Animal(int id, String nom, String espece, char sexe, int age, String provenance, String description, boolean decede) {</span>
+<span class="fc" id="L27">        this.id = id;</span>
+<span class="fc" id="L28">        this.nom = nom;</span>
+<span class="fc" id="L29">        this.espece = espece;</span>
+<span class="fc" id="L30">        this.sexe = sexe;</span>
+<span class="fc" id="L31">        this.age = age;</span>
+<span class="fc" id="L32">        this.provenance = provenance;</span>
+<span class="fc" id="L33">        this.description = description;</span>
+<span class="fc" id="L34">        this.decede = decede;</span>
+<span class="fc" id="L35">    }</span>
+
+<span class="nc" id="L37">    public Animal(String nom, String espece, char sexe, int age, String provenance, String description, boolean decede) {</span>
+<span class="nc" id="L38">        this.nom = nom;</span>
+<span class="nc" id="L39">        this.espece = espece;</span>
+<span class="nc" id="L40">        this.sexe = sexe;</span>
+<span class="nc" id="L41">        this.age = age;</span>
+<span class="nc" id="L42">        this.provenance = provenance;</span>
+<span class="nc" id="L43">        this.description = description;</span>
+<span class="nc" id="L44">        this.decede = decede;</span>
+<span class="nc" id="L45">    }</span>
+
+<span class="nc" id="L47">    public Animal(String numeroId, String nom, String espece, char sexe, int age, String provenance, String description) {</span>
+		// TODO Auto-generated constructor stub
+<span class="nc" id="L49">    	this.numeroId = numeroId;</span>
+<span class="nc" id="L50">        this.nom = nom;</span>
+<span class="nc" id="L51">        this.espece = espece;</span>
+<span class="nc" id="L52">        this.sexe = sexe;</span>
+<span class="nc" id="L53">        this.age = age;</span>
+<span class="nc" id="L54">        this.provenance = provenance;</span>
+<span class="nc" id="L55">        this.description = description;</span>
+<span class="nc" id="L56">        this.decede = false;</span>
+        
+        //System.out.println(&quot;Animal Constructeur&quot;);
+        //System.out.println(this.toString());
+<span class="nc" id="L60">	}</span>
+
+<span class="nc" id="L62">	public Animal(int id,String numeroId, String nom, String espece, char sexe, int age, String provenance, String description, boolean decede) {</span>
+<span class="nc" id="L63">        this.id = id;</span>
+<span class="nc" id="L64">        this.numeroId = numeroId;</span>
+<span class="nc" id="L65">        this.nom = nom;</span>
+<span class="nc" id="L66">        this.espece = espece;</span>
+<span class="nc" id="L67">        this.sexe = sexe;</span>
+<span class="nc" id="L68">        this.age = age;</span>
+<span class="nc" id="L69">        this.provenance = provenance;</span>
+<span class="nc" id="L70">        this.description = description;</span>
+<span class="nc" id="L71">        this.decede = decede;</span>
+<span class="nc" id="L72">    }</span>
+
+	public int getId() {
+		// System.out.println(&quot;id : &quot;+this.id);
+<span class="fc" id="L76">        return id;</span>
+    }
+
+    public String getNom() {
+<span class="fc" id="L80">        return nom;</span>
+    }
+
+    public String getEspece() {
+<span class="fc" id="L84">        return espece;</span>
+    }
+
+    public char getSexe() {
+<span class="fc" id="L88">        return sexe;</span>
+    }
+
+    public int getAge() {
+<span class="fc" id="L92">        return age;</span>
+    }
+
+    public String getProvenance() {
+<span class="fc" id="L96">        return provenance;</span>
+    }
+
+    public String getDescription() {
+<span class="fc" id="L100">        return description;</span>
+    }
+
+    public boolean isDecede() {
+<span class="fc" id="L104">        return decede;</span>
+    }
+    
+    public boolean isPresent(DatabaseManager dbManager) {
+<span class="nc" id="L108">        return dbManager.estPresent(this.id);</span>
+    }
+
+	public String getNumeroId() {
+<span class="fc" id="L112">		return numeroId;</span>
+	}
+
+	public void setNumeroId(String numeroId) {
+<span class="fc" id="L116">		this.numeroId = numeroId;</span>
+<span class="fc" id="L117">	}</span>
+	
+    @Override
+	public String toString() {
+<span class="nc" id="L121">    	return this.nom;</span>
+	}
+    
+    public String toStringLong() {
+<span class="nc" id="L125">		return &quot;Animal [id=&quot; + id + &quot;, nom=&quot; + nom + &quot;, espece=&quot; + espece + &quot;, sexe=&quot; + sexe + &quot;, age=&quot; + age</span>
+				+ &quot;, provenance=&quot; + provenance + &quot;, description=&quot; + description + &quot;, decede=&quot; + decede + &quot;, numeroId=&quot;
+				+ numeroId + &quot;]&quot;;
+    }
+
+	public void setId(int id) {
+<span class="fc" id="L131">		this.id = id;</span>
+<span class="fc" id="L132">	}</span>
+
+	public void setNom(String nom) {
+<span class="fc" id="L135">		this.nom = nom;</span>
+<span class="fc" id="L136">	}</span>
+
+	public void setEspece(String espece) {
+<span class="fc" id="L139">		this.espece = espece;</span>
+<span class="fc" id="L140">	}</span>
+
+	public void setSexe(char sexe) {
+<span class="fc" id="L143">		this.sexe = sexe;</span>
+<span class="fc" id="L144">	}</span>
+
+	public void setAge(int age) {
+<span class="fc" id="L147">		this.age = age;</span>
+<span class="fc" id="L148">	}</span>
+
+	public void setProvenance(String provenance) {
+<span class="fc" id="L151">		this.provenance = provenance;</span>
+<span class="fc" id="L152">	}</span>
+
+	public void setDescription(String description) {
+<span class="fc" id="L155">		this.description = description;</span>
+<span class="fc" id="L156">	}</span>
+
+	public void setDecede(boolean decede) {
+<span class="fc" id="L159">		this.decede = decede;</span>
+<span class="fc" id="L160">	}</span>
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

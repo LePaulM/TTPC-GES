@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Mouvement.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TTPC-GES</a> &gt; <a href="index.source.html" class="el_package">com.ttpc.ges.model</a> &gt; <span class="el_source">Mouvement.java</span></div><h1>Mouvement.java</h1><pre class="source lang-java linenums">package com.ttpc.ges.model;
+
+import java.sql.Date;
+import java.time.Instant;
+
+public class Mouvement {
+    private int id;
+    private int animalId;
+    private String typeMouvement; 
+    private Date dateMouvement;
+    private String destination;
+<span class="pc" id="L12">    private boolean isDecede = false;</span>
+
+    // Constructeurs
+<span class="nc" id="L15">    public Mouvement() {}</span>
+    
+<span class="fc" id="L17">    public Mouvement(int animalId, String typeMouvement, Date dateMouvement, String destination, boolean isDecede) {</span>
+<span class="fc" id="L18">        this.animalId = animalId;</span>
+<span class="fc" id="L19">        this.typeMouvement = typeMouvement;</span>
+<span class="fc" id="L20">        this.dateMouvement = dateMouvement;</span>
+<span class="fc" id="L21">        this.setDecede(isDecede);</span>
+<span class="fc" id="L22">        this.setDestination(&quot;&quot;);</span>
+<span class="fc" id="L23">    }</span>
+
+<span class="fc" id="L25">    public Mouvement(int animalId, String typeMouvement, Date dateMouvement) {</span>
+<span class="fc" id="L26">        this.animalId = animalId;</span>
+<span class="fc" id="L27">        this.typeMouvement = typeMouvement;</span>
+<span class="fc" id="L28">        this.dateMouvement = dateMouvement;</span>
+<span class="fc" id="L29">        this.setDestination(&quot;&quot;);</span>
+<span class="fc" id="L30">    }</span>
+    
+<span class="nc" id="L32">    public Mouvement(int id, int animalId, String typeMouvement, Date dateMouvement) {</span>
+<span class="nc" id="L33">        this.id = id;</span>
+<span class="nc" id="L34">        this.animalId = animalId;</span>
+<span class="nc" id="L35">        this.typeMouvement = typeMouvement;</span>
+<span class="nc" id="L36">        this.dateMouvement = dateMouvement;</span>
+<span class="nc" id="L37">        this.setDestination(&quot;&quot;);</span>
+<span class="nc" id="L38">    }</span>
+
+<span class="nc" id="L40">    public Mouvement(int id, int animalId, String typeMouvement, Date dateMouvement, boolean isDecede, String destination) {</span>
+<span class="nc" id="L41">        this.id = id;</span>
+<span class="nc" id="L42">        this.animalId = animalId;</span>
+<span class="nc" id="L43">        this.typeMouvement = typeMouvement;</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        this.dateMouvement = dateMouvement != null ? dateMouvement : new java.sql.Date(Instant.now().toEpochMilli());</span>
+<span class="nc" id="L45">        this.isDecede = isDecede;</span>
+<span class="nc" id="L46">        this.destination = destination;</span>
+<span class="nc" id="L47">    }</span>
+
+    // Getters et Setters
+<span class="fc" id="L50">    public int getId() { return id; }</span>
+<span class="fc" id="L51">    public void setId(int id) { this.id = id; }</span>
+
+<span class="fc" id="L53">    public int getAnimalId() { return animalId; }</span>
+<span class="fc" id="L54">    public void setAnimalId(int animalId) { this.animalId = animalId; }</span>
+
+<span class="fc" id="L56">    public String getTypeMouvement() { return typeMouvement; }</span>
+<span class="fc" id="L57">    public void setTypeMouvement(String typeMouvement) { this.typeMouvement = typeMouvement; }</span>
+
+<span class="fc" id="L59">    public Date getDateMouvement() { return dateMouvement; }</span>
+<span class="fc" id="L60">    public void setDateMouvement(Date dateMouvement) { this.dateMouvement = dateMouvement; }</span>
+
+	public boolean isDecede() {
+<span class="fc" id="L63">		return isDecede;</span>
+	}
+
+	public void setDecede(boolean isDecede) {
+<span class="fc" id="L67">		this.isDecede = isDecede;</span>
+<span class="fc" id="L68">	}</span>
+
+	public String getDestination() {
+<span class="fc" id="L71">		return destination;</span>
+	}
+
+	public void setDestination(String destination) {
+<span class="fc" id="L75">		this.destination = destination;</span>
+<span class="fc" id="L76">	}</span>
+
+	@Override
+	public String toString() {
+<span class="nc" id="L80">		return &quot;Mouvement [id=&quot; + id + &quot;, animalId=&quot; + animalId + &quot;, typeMouvement=&quot; + typeMouvement</span>
+				+ &quot;, dateMouvement=&quot; + dateMouvement + &quot;, destination=&quot; + destination + &quot;, isDecede=&quot; + isDecede + &quot;]&quot;;
+	}
+	
+	
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

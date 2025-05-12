@@ -130,5 +130,33 @@ public class Animal {
 	public void setId(int id) {
 		this.id = id;
 	}
+
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
+
+	public void setEspece(String espece) {
+		this.espece = espece;
+	}
+
+	public void setSexe(char sexe) {
+		this.sexe = sexe;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public void setProvenance(String provenance) {
+		this.provenance = provenance;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setDecede(boolean decede) {
+		this.decede = decede;
+	}
 	
 }

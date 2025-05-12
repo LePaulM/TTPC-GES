@@ -19,12 +19,14 @@ public class Mouvement {
         this.typeMouvement = typeMouvement;
         this.dateMouvement = dateMouvement;
         this.setDecede(isDecede);
+        this.setDestination("");
     }
 
     public Mouvement(int animalId, String typeMouvement, Date dateMouvement) {
         this.animalId = animalId;
         this.typeMouvement = typeMouvement;
         this.dateMouvement = dateMouvement;
+        this.setDestination("");
     }
     
     public Mouvement(int id, int animalId, String typeMouvement, Date dateMouvement) {
@@ -32,6 +34,7 @@ public class Mouvement {
         this.animalId = animalId;
         this.typeMouvement = typeMouvement;
         this.dateMouvement = dateMouvement;
+        this.setDestination("");
     }
 
     public Mouvement(int id, int animalId, String typeMouvement, Date dateMouvement, boolean isDecede, String destination) {

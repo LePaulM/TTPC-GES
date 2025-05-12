@@ -8,11 +8,16 @@
   <!-- Coordonnées du projet -->
   <groupId>com.ttpc</groupId>
   <artifactId>ttpc-ges</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>TTPC-GES</name>
   <description>Application de gestion des projets du club TTPC</description>
-  <url>https://github.com/LePaulM/TTPC-GES</url>
+  <scm>
+    <connection>scm:git:https://github.com/LePaulM/TTPC-GES.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/LePaulM/TTPC-GES.git</developerConnection>
+    <url>https://github.com/LePaulM/TTPC-GES</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <!-- Auteur -->
   <developers>
@@ -59,13 +64,30 @@
     </dependency>
 
     <!-- Tests -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>5.10.0</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+		<!-- JUnit 5 -->
+		<dependency>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter</artifactId>
+		    <version>5.10.0</version>
+		    <scope>test</scope>
+		</dependency>
+		
+		<!-- Mockito -->
+		<dependency>
+		    <groupId>org.mockito</groupId>
+		    <artifactId>mockito-core</artifactId>
+		    <version>5.11.0</version>
+		    <scope>test</scope>
+		</dependency>
+		
+		<!-- (optionnel mais recommandé) Mockito + JUnit 5 integration -->
+		<dependency>
+		    <groupId>org.mockito</groupId>
+		    <artifactId>mockito-junit-jupiter</artifactId>
+		    <version>5.11.0</version>
+		    <scope>test</scope>
+		</dependency>
+</dependencies>
 
   <!-- Plugins -->
   <build>
@@ -81,7 +103,6 @@
           <target>17</target>
         </configuration>
       </plugin>
-
       <!-- JAR exécutable avec dépendances -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -104,6 +125,44 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-release-plugin</artifactId>
+	    <version>3.0.1</version>
+	    <configuration>
+	      <tagNameFormat>@{project.version}</tagNameFormat>
+  	      <scmCommentPrefix>[release]</scmCommentPrefix>
+	    </configuration>
+	  </plugin>
+	  <!-- Surefire  -->
+	  <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-surefire-plugin</artifactId>
+       <version>3.1.2</version>
+       <configuration>
+        <useModulePath>false</useModulePath>
+       </configuration>
+      </plugin>
+      <!-- JaCoCo -->
+      <plugin>
+	   <groupId>org.jacoco</groupId>
+	   <artifactId>jacoco-maven-plugin</artifactId>
+	   <version>0.8.10</version>
+	   <executions>
+	     <execution>
+	      <goals>
+	        <goal>prepare-agent</goal>
+	      </goals>
+	    </execution>
+	    <execution>
+	      <id>report</id>
+	      <phase>prepare-package</phase>
+	      <goals>
+	        <goal>report</goal>
+	      </goals>
+	    </execution>
+	  </executions>
+	</plugin>
     </plugins>
   </build>
 </project>
