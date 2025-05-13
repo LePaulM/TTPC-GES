@@ -234,7 +234,165 @@ public class MouvementPanel extends JPanel {
         updateMouvementTable();
     }
     
-    public static Date parseDateJJMMAAAA(String input) throws ParseException {
+    
+    
+    public TTPCComboBox<Animal> getAnimalComboBox() {
+		return animalComboBox;
+	}
+
+	public void setAnimalComboBox(TTPCComboBox<Animal> animalComboBox) {
+		this.animalComboBox = animalComboBox;
+	}
+
+	public TTPCComboBox<String> getTypeBox() {
+		return typeBox;
+	}
+
+	public void setTypeBox(TTPCComboBox<String> typeBox) {
+		this.typeBox = typeBox;
+	}
+
+	public JCheckBox getDecedeCheckBox() {
+		return decedeCheckBox;
+	}
+
+	public void setDecedeCheckBox(JCheckBox decedeCheckBox) {
+		this.decedeCheckBox = decedeCheckBox;
+	}
+
+	public TTPCFormattedTextField getDateField() {
+		return dateField;
+	}
+
+	public void setDateField(TTPCFormattedTextField dateField) {
+		this.dateField = dateField;
+	}
+
+	public TTPCTextField getSearchField() {
+		return searchField;
+	}
+
+	public void setSearchField(TTPCTextField searchField) {
+		this.searchField = searchField;
+	}
+
+	public JTable getTable() {
+		return table;
+	}
+
+	public void setTable(JTable table) {
+		this.table = table;
+	}
+
+	public DefaultTableModel getTableModel() {
+		return tableModel;
+	}
+
+	public void setTableModel(DefaultTableModel tableModel) {
+		this.tableModel = tableModel;
+	}
+
+	public TableRowSorter<DefaultTableModel> getSorter() {
+		return sorter;
+	}
+
+	public void setSorter(TableRowSorter<DefaultTableModel> sorter) {
+		this.sorter = sorter;
+	}
+
+	public List<Animal> getAnimaux() {
+		return animaux;
+	}
+
+	public void setAnimaux(List<Animal> animaux) {
+		this.animaux = animaux;
+	}
+
+	public JPanel getFormWrapper() {
+		return formWrapper;
+	}
+
+	public void setFormWrapper(JPanel formWrapper) {
+		this.formWrapper = formWrapper;
+	}
+
+	public TTPCButton getVoirMouvementsButton() {
+		return voirMouvementsButton;
+	}
+
+	public void setVoirMouvementsButton(TTPCButton voirMouvementsButton) {
+		this.voirMouvementsButton = voirMouvementsButton;
+	}
+
+	public TTPCButton getEditButton() {
+		return editButton;
+	}
+
+	public void setEditButton(TTPCButton editButton) {
+		this.editButton = editButton;
+	}
+
+	public TTPCButton getAddButton() {
+		return addButton;
+	}
+
+	public void setAddButton(TTPCButton addButton) {
+		this.addButton = addButton;
+	}
+
+	public TTPCButton getDeleteButton() {
+		return deleteButton;
+	}
+
+	public void setDeleteButton(TTPCButton deleteButton) {
+		this.deleteButton = deleteButton;
+	}
+
+	public JButton getImportButton() {
+		return importButton;
+	}
+
+	public void setImportButton(JButton importButton) {
+		this.importButton = importButton;
+	}
+
+	public JButton getExportButton() {
+		return exportButton;
+	}
+
+	public void setExportButton(JButton exportButton) {
+		this.exportButton = exportButton;
+	}
+
+	public JButton getToggleFormButton() {
+		return toggleFormButton;
+	}
+
+	public void setToggleFormButton(JButton toggleFormButton) {
+		this.toggleFormButton = toggleFormButton;
+	}
+
+	public JSplitPane getSplitPane() {
+		return splitPane;
+	}
+
+	public void setSplitPane(JSplitPane splitPane) {
+		this.splitPane = splitPane;
+	}
+
+	public Color getBlueColor() {
+		return blueColor;
+	}
+
+	public void setBlueColor(Color blueColor) {
+		this.blueColor = blueColor;
+	}
+
+	public DatabaseManager getDbManager() {
+		return dbManager;
+	}
+
+	public static Date parseDateJJMMAAAA(String input) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sdf.setLenient(false); // stricte : 32/13/2025 sera invalide
         java.util.Date parsed = sdf.parse(input);

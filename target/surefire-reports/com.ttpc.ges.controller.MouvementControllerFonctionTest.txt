@@ -1,0 +1,36 @@
+-------------------------------------------------------------------------------
+Test set: com.ttpc.ges.controller.MouvementControllerFonctionTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.015 s <<< FAILURE! -- in com.ttpc.ges.controller.MouvementControllerFonctionTest
+com.ttpc.ges.controller.MouvementControllerFonctionTest.testAjoutMouvementNull -- Time elapsed: 0.003 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+mouvementPanel.updateMouvementTable();
+Never wanted here:
+-> at com.ttpc.ges.view.MouvementPanel.updateMouvementTable(MouvementPanel.java:562)
+But invoked here:
+-> at com.ttpc.ges.controller.MouvementController.<init>(MouvementController.java:21) with arguments: []
+
+	at com.ttpc.ges.view.MouvementPanel.updateMouvementTable(MouvementPanel.java:562)
+	at com.ttpc.ges.controller.MouvementControllerFonctionTest.testAjoutMouvementNull(MouvementControllerFonctionTest.java:60)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.ttpc.ges.controller.MouvementControllerFonctionTest.testAjoutMouvementValide -- Time elapsed: 0.006 s <<< FAILURE!
+org.mockito.exceptions.verification.TooManyActualInvocations: 
+
+mouvementPanel.updateMouvementTable();
+Wanted 1 time:
+-> at com.ttpc.ges.view.MouvementPanel.updateMouvementTable(MouvementPanel.java:562)
+But was 2 times:
+-> at com.ttpc.ges.controller.MouvementController.<init>(MouvementController.java:21)
+-> at com.ttpc.ges.controller.MouvementController$AddMouvementListener.actionPerformed(MouvementController.java:35)
+
+
+	at com.ttpc.ges.view.MouvementPanel.updateMouvementTable(MouvementPanel.java:562)
+	at com.ttpc.ges.controller.MouvementControllerFonctionTest.testAjoutMouvementValide(MouvementControllerFonctionTest.java:49)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

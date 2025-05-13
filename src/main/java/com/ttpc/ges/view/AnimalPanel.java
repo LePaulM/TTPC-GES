@@ -189,8 +189,175 @@ public class AnimalPanel extends JPanel {
 
         updateAnimalTable(this.dbManager.getTousLesAnimaux());
     }
+    
+    
 
-    private void applyFilter() {
+    public TTPCTextField getNomField() {
+		return nomField;
+	}
+
+	public void setNomField(TTPCTextField nomField) {
+		this.nomField = nomField;
+	}
+
+	public TTPCTextField getEspeceField() {
+		return especeField;
+	}
+
+	public void setEspeceField(TTPCTextField especeField) {
+		this.especeField = especeField;
+	}
+
+	public TTPCTextField getProvenanceField() {
+		return provenanceField;
+	}
+
+	public void setProvenanceField(TTPCTextField provenanceField) {
+		this.provenanceField = provenanceField;
+	}
+
+	public TTPCTextField getSearchField() {
+		return searchField;
+	}
+
+	public void setSearchField(TTPCTextField searchField) {
+		this.searchField = searchField;
+	}
+
+	public TTPCTextField getNumeroIdField() {
+		return numeroIdField;
+	}
+
+	public void setNumeroIdField(TTPCTextField numeroIdField) {
+		this.numeroIdField = numeroIdField;
+	}
+
+	public JTextArea getDescriptionArea() {
+		return descriptionArea;
+	}
+
+	public void setDescriptionArea(JTextArea descriptionArea) {
+		this.descriptionArea = descriptionArea;
+	}
+
+	public TTPCComboBox<String> getSexeBox() {
+		return sexeBox;
+	}
+
+	public void setSexeBox(TTPCComboBox<String> sexeBox) {
+		this.sexeBox = sexeBox;
+	}
+
+	public JSpinner getAgeSpinner() {
+		return ageSpinner;
+	}
+
+	public void setAgeSpinner(JSpinner ageSpinner) {
+		this.ageSpinner = ageSpinner;
+	}
+
+	public JTable getTable() {
+		return table;
+	}
+
+	public void setTable(JTable table) {
+		this.table = table;
+	}
+
+	public DefaultTableModel getTableModel() {
+		return tableModel;
+	}
+
+	public void setTableModel(DefaultTableModel tableModel) {
+		this.tableModel = tableModel;
+	}
+
+	public TableRowSorter<DefaultTableModel> getSorter() {
+		return sorter;
+	}
+
+	public void setSorter(TableRowSorter<DefaultTableModel> sorter) {
+		this.sorter = sorter;
+	}
+
+	public JPanel getFormWrapper() {
+		return formWrapper;
+	}
+
+	public void setFormWrapper(JPanel formWrapper) {
+		this.formWrapper = formWrapper;
+	}
+
+	public JSplitPane getSplitPane() {
+		return splitPane;
+	}
+
+	public void setSplitPane(JSplitPane splitPane) {
+		this.splitPane = splitPane;
+	}
+
+	public TTPCButton getAddButton() {
+		return addButton;
+	}
+
+	public void setAddButton(TTPCButton addButton) {
+		this.addButton = addButton;
+	}
+
+	public TTPCButton getEditButton() {
+		return editButton;
+	}
+
+	public void setEditButton(TTPCButton editButton) {
+		this.editButton = editButton;
+	}
+
+	public TTPCButton getDeleteButton() {
+		return deleteButton;
+	}
+
+	public void setDeleteButton(TTPCButton deleteButton) {
+		this.deleteButton = deleteButton;
+	}
+
+	public TTPCButton getVoirMouvementsButton() {
+		return voirMouvementsButton;
+	}
+
+	public void setVoirMouvementsButton(TTPCButton voirMouvementsButton) {
+		this.voirMouvementsButton = voirMouvementsButton;
+	}
+
+	public JButton getImportButton() {
+		return importButton;
+	}
+
+	public void setImportButton(JButton importButton) {
+		this.importButton = importButton;
+	}
+
+	public JButton getExportButton() {
+		return exportButton;
+	}
+
+	public void setExportButton(JButton exportButton) {
+		this.exportButton = exportButton;
+	}
+
+	public JButton getToggleFormButton() {
+		return toggleFormButton;
+	}
+
+	public void setToggleFormButton(JButton toggleFormButton) {
+		this.toggleFormButton = toggleFormButton;
+	}
+
+	public DatabaseManager getDbManager() {
+		return dbManager;
+	}
+
+
+	private void applyFilter() {
         String query = searchField.getText();
         sorter.setRowFilter(query.isEmpty() ? null : RowFilter.regexFilter("(?i)" + query));
     }
@@ -402,7 +569,7 @@ public class AnimalPanel extends JPanel {
         String nom = (String) tableModel.getValueAt(modelRow, 1);
         String espece = (String) tableModel.getValueAt(modelRow, 2);
         String sexe = tableModel.getValueAt(modelRow, 3).toString();
-        int age = (int) tableModel.getValueAt(modelRow, 4);
+        int age = (int) Integer.parseInt((String) tableModel.getValueAt(modelRow, 4));
         String provenance = (String) tableModel.getValueAt(modelRow, 5);
         String description = (String) tableModel.getValueAt(modelRow, 6);
         boolean decede = "Oui".equals(tableModel.getValueAt(modelRow, 7));

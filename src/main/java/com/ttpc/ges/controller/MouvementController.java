@@ -21,7 +21,7 @@ public class MouvementController {
         mouvementPanel.updateMouvementTable();
     }
 
-    class AddMouvementListener implements ActionListener {
+    public class AddMouvementListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             Mouvement m = mouvementPanel.getMouvementFormData();

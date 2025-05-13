@@ -21,7 +21,7 @@ public class AnimalController {
         animalPanel.updateAnimalTable(dbManager.getTousLesAnimaux());
     }
 
-    class AddAnimalListener implements ActionListener {
+    public class AddAnimalListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             Animal a = animalPanel.getAnimalFormData();

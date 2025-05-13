@@ -3,6 +3,8 @@ package com.ttpc.ges.model;
 import java.sql.Date;
 import java.time.Instant;
 
+import com.ttpc.ges.utils.TTPCDateParser;
+
 public class Mouvement {
     private int id;
     private int animalId;
@@ -12,8 +14,6 @@ public class Mouvement {
     private boolean isDecede = false;
 
     // Constructeurs
-    public Mouvement() {}
-    
     public Mouvement(int animalId, String typeMouvement, Date dateMouvement, String destination, boolean isDecede) {
         this.animalId = animalId;
         this.typeMouvement = typeMouvement;
@@ -58,6 +58,7 @@ public class Mouvement {
 
     public Date getDateMouvement() { return dateMouvement; }
     public void setDateMouvement(Date dateMouvement) { this.dateMouvement = dateMouvement; }
+    public void setDateMouvement(String dateMouvement) { this.dateMouvement = TTPCDateParser.stringToSqlDate(dateMouvement); }
 
 	public boolean isDecede() {
 		return isDecede;
