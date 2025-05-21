@@ -143,8 +143,12 @@ public class MouvementPanel extends JPanel {
             SwingUtilities.invokeLater(() -> splitPane.setDividerLocation(visible ? 0.0 : 0.3));
         });
 
-        JPanel topTableBar = new JPanel(new BorderLayout());
+        JPanel topTableBar = new JPanel();
+        topTableBar.setLayout(new BoxLayout(topTableBar, BoxLayout.X_AXIS));
         topTableBar.add(toggleFormButton, BorderLayout.WEST);
+        topTableBar.add(Box.createHorizontalStrut(5));
+        topTableBar.add(new JLabel("Recherche :"), BorderLayout.CENTER);
+        topTableBar.add(Box.createHorizontalStrut(5));
         topTableBar.add(searchField, BorderLayout.CENTER);
 
         JPanel tableButtonBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));

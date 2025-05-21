@@ -51,13 +51,13 @@ public class MainFrame extends JFrame {
         new MouvementController(mouvementPanel, dbManager);
 
         // Onglets
-        UIManager.put("TabbedPane.tabInsets", new Insets(0,0,0,0));
+        UIManager.put("TabbedPane.tabInsets", new Insets(5,3,5,3));
         tabbedPane = new JTabbedPane();
 
 
         // Crée les composants d'onglet
-        JLabel tabAnimaux = creerOnglet("Animaux", "animal.png");
-        JLabel tabMouvements = creerOnglet("Mouvements", "mouvement.png");
+        RoundedTabLabel tabAnimaux = new RoundedTabLabel("Animaux", "animal.png");
+        RoundedTabLabel tabMouvements = new RoundedTabLabel("Mouvements", "mouvement.png");
 
         // Ajout des panels au tabbedPane
         tabbedPane.addTab(null, wrapWithTopMargin(animalPanel));
@@ -69,20 +69,14 @@ public class MainFrame extends JFrame {
         // Gestion du changement de sélection
         tabbedPane.addChangeListener(e -> {
             int selected = tabbedPane.getSelectedIndex();
-            for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-                Component comp = tabbedPane.getTabComponentAt(i);
-                if (comp instanceof JLabel) {
-                    comp.setBackground(i == selected ? new Color(100, 149, 237) : Color.WHITE);
-                    comp.setForeground(i == selected ? Color.WHITE : Color.BLACK);
-                }
-            }
+            tabAnimaux.setSelected(selected == 0);
+            tabMouvements.setSelected(selected == 1);
         });
         
         tabbedPane.setFocusable(false);       
 
         // Appliquer l'état sélectionné à l'onglet 0
-        tabAnimaux.setBackground(new Color(100, 149, 237));
-        tabAnimaux.setForeground(Color.WHITE);
+        tabAnimaux.setSelected(true);
 
         // Ajout au layout
         add(tabbedPane, BorderLayout.CENTER);
@@ -114,6 +108,7 @@ public class MainFrame extends JFrame {
         JLabel label = new JLabel(texte, iconeRedim, SwingConstants.CENTER);
         label.setVerticalTextPosition(SwingConstants.CENTER);
         label.setOpaque(true);
+        label.setBorder(new RoundedBorder(20, 15, Color.GRAY));
         label.setBackground(Color.WHITE);
         label.setForeground(Color.BLACK);
         label.setPreferredSize(new Dimension(200, 60));
@@ -127,6 +122,51 @@ public class MainFrame extends JFrame {
         wrapper.add(content, BorderLayout.CENTER);
         return wrapper;
     }
+    
+    class RoundedTabLabel extends JLabel {
+        private boolean selected = false;
+        private final int radius = 20;
+        private final Color selectedColor = new Color(100, 149, 237);
+        private final Color unselectedColor = new Color(230, 230, 230);
+
+        public RoundedTabLabel(String text, String iconPath) {
+            super(text);
+            setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
+            setHorizontalAlignment(CENTER);
+            setFont(getFont().deriveFont(Font.BOLD, 13f));
+            setOpaque(false);
+            setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            setPreferredSize(new Dimension(200, 60));
+
+            try {
+                URL iconURL = getClass().getClassLoader().getResource("icons/" + iconPath);
+                if (iconURL != null) {
+                    ImageIcon icon = new ImageIcon(iconURL);
+                    Image scaled = icon.getImage().getScaledInstance(28, 28, Image.SCALE_SMOOTH);
+                    setIcon(new ImageIcon(scaled));
+                }
+            } catch (Exception e) {
+                System.err.println("[WARN] Icône non trouvée : " + iconPath);
+            }
+        }
+
+        public void setSelected(boolean selected) {
+            this.selected = selected;
+            setForeground(selected ? Color.WHITE : Color.BLACK);
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(selected ? selectedColor : unselectedColor);
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
+            g2.dispose();
+            super.paintComponent(g);
+        }
+    }
+
 
 
 }

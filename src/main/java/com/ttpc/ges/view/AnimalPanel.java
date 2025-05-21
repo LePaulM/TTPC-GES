@@ -134,8 +134,12 @@ public class AnimalPanel extends JPanel {
             SwingUtilities.invokeLater(() -> splitPane.setDividerLocation(visible ? 0.0 : 0.3));
         });
 
-        JPanel topTableBar = new JPanel(new BorderLayout());
+        JPanel topTableBar = new JPanel();
+        topTableBar.setLayout(new BoxLayout(topTableBar, BoxLayout.X_AXIS));
         topTableBar.add(toggleFormButton, BorderLayout.WEST);
+        topTableBar.add(Box.createHorizontalStrut(5));
+        topTableBar.add(new JLabel("Recherche :"), BorderLayout.CENTER);
+        topTableBar.add(Box.createHorizontalStrut(5));
         topTableBar.add(searchField, BorderLayout.CENTER);
 
         JPanel tableButtonBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -177,11 +181,7 @@ public class AnimalPanel extends JPanel {
                 System.out.println("Animal récupéré : " + a);
                 System.out.println("Animal : " + a.getId() + " - " + a.getNom());
 
-                if (a != null) {
-                    afficherMouvementsAnimal(a);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Animal introuvable.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                }
+                afficherMouvementsAnimal(a);
             } else {
                 JOptionPane.showMessageDialog(this, "Veuillez sélectionner un animal.", "Avertissement", JOptionPane.WARNING_MESSAGE);
             }
