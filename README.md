@@ -1,6 +1,6 @@
 # TTPC-GES
 
-**TTPC-GES** est une application de gestion destinée à la pension féline et canine **Tendres Truffes**.  
+**TTPC-GES** est une application de gestion destinée à la pension féline et canine **Tendres Truffes et Pattes au Chaud**.  
 Elle permet de suivre les animaux accueillis, leurs mouvements d'entrée et de sortie, ainsi que d'importer/exporter les données au format CSV.
 
 ---
