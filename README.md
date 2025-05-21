@@ -18,9 +18,10 @@ Elle permet de suivre les animaux accueillis, leurs mouvements d'entrée et de s
 
 ## 🖥️ Installation
 
-1. Exécute le fichier `TTPC-GES-Setup.exe` *(installateur Windows généré avec Inno Setup)*
-2. Suis les instructions à l’écran
-3. Un raccourci vers **TTPC-GES** sera placé sur le bureau
+1. Installer Java 17 ou une version plus réccente : https://www.oracle.com/fr/java/technologies/downloads/
+2. Exécute le fichier `TTPC-GES-Setup.exe` *(installateur Windows généré avec Inno Setup)*
+3. Suis les instructions à l’écran
+4. Un raccourci vers **TTPC-GES** sera placé sur le bureau
 
 ---
 
