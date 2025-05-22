@@ -94,19 +94,27 @@ public class MouvementPanel extends JPanel {
         buttonPanel.add(deleteButton);
         buttonPanel.add(voirMouvementsButton);
 
-        formPanel.setBackground(blueColor);
-        buttonPanel.setBackground(blueColor);
+
         buttonPanel.setLayout(new GridLayout(1, 0, 10, 10));
         buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
         buttonPanel.setPreferredSize(new Dimension(buttonPanel.getPreferredSize().width, 75));
-
+        
+        formPanel.setBackground(blueColor);
+        buttonPanel.setBackground(blueColor);
+        this.setBackground(blueColor);
 
         
         formWrapper = new JPanel();
         formWrapper.setLayout(new BoxLayout(formWrapper, BoxLayout.Y_AXIS));
         formWrapper.add(formPanel);
+        JPanel espaceColoré = new JPanel();
+        espaceColoré.setPreferredSize(new Dimension(0, 300)); // hauteur fixe (30px)
+        espaceColoré.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        espaceColoré.setBackground(new Color(240, 240, 255)); // exemple : fond bleu clair
+        espaceColoré.setBackground(blueColor);
+        formWrapper.add(espaceColoré);
         formWrapper.add(buttonPanel);
-
+        
         // === Table ===
         String[] colonnes = {
         	    "ID", // important pour la suppression
@@ -122,7 +130,7 @@ public class MouvementPanel extends JPanel {
         table.setFont(new Font("SansSerif", Font.PLAIN, 13));
         sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
-        JScrollPane scroll = new JScrollPane(table);
+        JScrollPane scrollTable = new JScrollPane(table);
         table.removeColumn(table.getColumnModel().getColumn(0)); // planque la colonne ID
      // Cacher la colonne ID (colonne 0)
         table.getColumnModel().getColumn(0).setMinWidth(0);
@@ -159,7 +167,7 @@ public class MouvementPanel extends JPanel {
 
         JPanel tableArea = new JPanel(new BorderLayout());
         tableArea.add(topTableBar, BorderLayout.NORTH);
-        tableArea.add(scroll, BorderLayout.CENTER);
+        tableArea.add(scrollTable, BorderLayout.CENTER);
         tableArea.add(tableButtonBar, BorderLayout.SOUTH);
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formWrapper, tableArea);
@@ -181,7 +189,7 @@ public class MouvementPanel extends JPanel {
 				modifierSelection();
 			} catch (ParseException e1) {
 				// TODO Auto-generated catch block
-				showMessage("Erreur bouton midifier : " + e1.getMessage());
+				showMessage("Erreur bouton modifier : " + e1.getMessage());
 			}
 		});
         deleteButton.addActionListener(e -> supprimerSelection());
@@ -219,8 +227,8 @@ public class MouvementPanel extends JPanel {
             textArea.setEditable(false);
             textArea.setFont(new Font("Monospaced", Font.PLAIN, 13));
 
-            JScrollPane scrollPane = new JScrollPane(textArea);
-            scrollPane.setPreferredSize(new Dimension(400, 300));
+            JScrollPane scrollTextArea = new JScrollPane(textArea);
+            scrollTextArea.setPreferredSize(new Dimension(400, 300));
 
             TTPCDialogMouvement dialog = new TTPCDialogMouvement(
         	    "Mouvements de : " + selectedAnimal.getNom(),
