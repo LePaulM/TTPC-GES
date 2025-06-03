@@ -20,7 +20,7 @@ jobs:
     env:
       NAME: 'BUILD'
       JAVA_VERSION: '17'
-      GITHUB_TOKEN: ${{secrets.MY_SECRET_TOKEN}}
+      GITHUB_TOKEN: ${{ secrets.MY_SECRET_TOKEN }}
       
     runs-on: ubuntu-latest
 
