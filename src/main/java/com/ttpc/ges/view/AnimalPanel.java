@@ -61,7 +61,6 @@ public class AnimalPanel extends JPanel {
         // === Formulaire ===
         JPanel formPanel = new JPanel(new GridLayout(0, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createTitledBorder("Ajouter un animal"));
-        formPanel.setPreferredSize(new Dimension(250, 200));
 
         numeroIdField = new TTPCTextField();
         nomField = new TTPCTextField();
@@ -98,15 +97,23 @@ public class AnimalPanel extends JPanel {
         buttonPanel.add(voirMouvementsButton);
         buttonPanel.setLayout(new GridLayout(1, 0, 10, 10));
         buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
-        buttonPanel.setPreferredSize(new Dimension(buttonPanel.getPreferredSize().width, 75));
-
+        buttonPanel.setPreferredSize(new Dimension(buttonPanel.getPreferredSize().width, 75));     
+        
         formPanel.setBackground(blueColor);
+        formPanel.setPreferredSize(new Dimension(200, 400));
+        formPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
+        
         buttonPanel.setBackground(blueColor);
         formWrapper = new JPanel();
         formWrapper.setLayout(new BoxLayout(formWrapper, BoxLayout.Y_AXIS));
         formWrapper.add(formPanel);
-        formWrapper.add(buttonPanel);
-        
+        JPanel espaceColoré = new JPanel();
+        espaceColoré.setPreferredSize(new Dimension(0, 300)); // hauteur fixe (30px)
+        espaceColoré.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        espaceColoré.setBackground(new Color(240, 240, 255)); // exemple : fond bleu clair
+        espaceColoré.setBackground(blueColor);
+        formWrapper.add(espaceColoré);
+        formWrapper.add(buttonPanel,Component.BOTTOM_ALIGNMENT);
 
         // === Table ===
         String[] cols = {"ID","Numero d'identification", "Nom", "Espèce", "Sexe", "Âge", "Provenance", "Description", "Décédé ?"," Présent ?"};
@@ -119,7 +126,7 @@ public class AnimalPanel extends JPanel {
         table.setFont(new Font("SansSerif", Font.PLAIN, 13));
         sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
-        JScrollPane scroll = new JScrollPane(table);
+        JScrollPane scrollTable = new JScrollPane(table);
         table.getColumnModel().getColumn(0).setMinWidth(0);
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -134,8 +141,12 @@ public class AnimalPanel extends JPanel {
             SwingUtilities.invokeLater(() -> splitPane.setDividerLocation(visible ? 0.0 : 0.3));
         });
 
-        JPanel topTableBar = new JPanel(new BorderLayout());
+        JPanel topTableBar = new JPanel();
+        topTableBar.setLayout(new BoxLayout(topTableBar, BoxLayout.X_AXIS));
         topTableBar.add(toggleFormButton, BorderLayout.WEST);
+        topTableBar.add(Box.createHorizontalStrut(5));
+        topTableBar.add(new JLabel("Recherche :"), BorderLayout.CENTER);
+        topTableBar.add(Box.createHorizontalStrut(5));
         topTableBar.add(searchField, BorderLayout.CENTER);
 
         JPanel tableButtonBar = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -146,7 +157,7 @@ public class AnimalPanel extends JPanel {
 
         JPanel tableArea = new JPanel(new BorderLayout());
         tableArea.add(topTableBar, BorderLayout.NORTH);
-        tableArea.add(scroll, BorderLayout.CENTER);
+        tableArea.add(scrollTable, BorderLayout.CENTER);
         tableArea.add(tableButtonBar, BorderLayout.SOUTH);
 
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formWrapper, tableArea);
@@ -177,11 +188,7 @@ public class AnimalPanel extends JPanel {
                 System.out.println("Animal récupéré : " + a);
                 System.out.println("Animal : " + a.getId() + " - " + a.getNom());
 
-                if (a != null) {
-                    afficherMouvementsAnimal(a);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Animal introuvable.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                }
+                afficherMouvementsAnimal(a);
             } else {
                 JOptionPane.showMessageDialog(this, "Veuillez sélectionner un animal.", "Avertissement", JOptionPane.WARNING_MESSAGE);
             }

@@ -1,0 +1,36 @@
+-------------------------------------------------------------------------------
+Test set: com.ttpc.ges.fonction.controller.AnimalControllerFonctionTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 1.934 s <<< FAILURE! -- in com.ttpc.ges.fonction.controller.AnimalControllerFonctionTest
+com.ttpc.ges.fonction.controller.AnimalControllerFonctionTest.testAjoutAnimalNullNeFaitRien -- Time elapsed: 0.072 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+animalPanel.updateAnimalTable(<any>);
+Never wanted here:
+-> at com.ttpc.ges.view.AnimalPanel.updateAnimalTable(AnimalPanel.java:387)
+But invoked here:
+-> at com.ttpc.ges.controller.AnimalController.<init>(AnimalController.java:21) with arguments: [[]]
+
+	at com.ttpc.ges.view.AnimalPanel.updateAnimalTable(AnimalPanel.java:387)
+	at com.ttpc.ges.fonction.controller.AnimalControllerFonctionTest.testAjoutAnimalNullNeFaitRien(AnimalControllerFonctionTest.java:69)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.ttpc.ges.fonction.controller.AnimalControllerFonctionTest.testAjoutAnimalValideMetAJourTable -- Time elapsed: 0.009 s <<< FAILURE!
+org.mockito.exceptions.verification.TooManyActualInvocations: 
+
+animalPanel.updateAnimalTable(<any>);
+Wanted 1 time:
+-> at com.ttpc.ges.view.AnimalPanel.updateAnimalTable(AnimalPanel.java:387)
+But was 2 times:
+-> at com.ttpc.ges.controller.AnimalController.<init>(AnimalController.java:21)
+-> at com.ttpc.ges.controller.AnimalController$AddAnimalListener.actionPerformed(AnimalController.java:30)
+
+
+	at com.ttpc.ges.view.AnimalPanel.updateAnimalTable(AnimalPanel.java:387)
+	at com.ttpc.ges.fonction.controller.AnimalControllerFonctionTest.testAjoutAnimalValideMetAJourTable(AnimalControllerFonctionTest.java:58)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
