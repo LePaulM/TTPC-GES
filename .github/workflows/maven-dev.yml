@@ -56,7 +56,7 @@ jobs:
         # Custom subdirectories to upload from
         # subdirectories: # optional
         # Custom path for the new Javadoc
-        javadoc-source-folder: ./github/workflows/javadoc
+        javadoc-source-folder: ./.github/workflows/javadoc
         # Enable or disable deploy of the javadoc to the GitHub Page
         without-deploy: false
         # Enable or disable the checkout
