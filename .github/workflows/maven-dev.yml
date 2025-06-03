@@ -32,6 +32,13 @@ jobs:
         java-version: ${{env.JAVA_VERSION}}
         distribution: 'temurin'
         cache: maven
+        
+    - name: Show current git remote URL
+      run: git remote -v
+    
+    - name: Set correct remote URL (if needed)
+      run: git remote set-url origin https://github.com/LePaulM/TTPC-GES.git
+      
     - name: Deploy - Publish Javadoc
       # You may pin to the exact commit or the version.
       # uses: MathieuSoysal/Javadoc-publisher.yml@fda475b197081ba1eca7a1dfadf0c017080a1623
