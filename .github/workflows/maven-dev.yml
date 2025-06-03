@@ -1,0 +1,69 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+    env:
+      NAME: 'BUILD'
+      JAVA_VERSION: '17'
+      GITHUB_TOKEN: ${{secrets.MY_SECRET_TOKEN}}
+      
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK ${{env.JAVA_VERSION}}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{env.JAVA_VERSION}}
+        distribution: 'temurin'
+        cache: maven
+    - name: Deploy - Publish Javadoc
+      # You may pin to the exact commit or the version.
+      # uses: MathieuSoysal/Javadoc-publisher.yml@fda475b197081ba1eca7a1dfadf0c017080a1623
+      uses: MathieuSoysal/Javadoc-publisher.yml@v3.0.2
+      with:
+        # Java version inside your project
+        java-version: ${{env.JAVA_VERSION}}
+        # The GitHub token the GitHub repository
+        GITHUB_TOKEN: ${{env.GITHUB_TOKEN}}
+        # Deploy mode branch or artifact
+        deploy-mode:  branch
+        # Branch where the javadoc is hosted
+        javadoc-branch: javadoc
+        # Directory where the javadoc contents should be stored
+        target-folder: .
+        # Java distribution inside your project
+        java-distribution: adopt
+        # Maven or Gradle project
+        project: maven
+        # Custom command to generate the javadoc
+        # custom-command: # optional, default is 
+        # Custom subdirectories to upload from
+        # subdirectories: # optional
+        # Custom path for the new Javadoc
+        javadoc-source-folder: ./javadoc
+        # Enable or disable deploy of the javadoc to the GitHub Page
+        without-deploy: false
+        # Enable or disable the checkout
+        without-checkout: false
+            
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+    - name: Update dependency graph
+      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
