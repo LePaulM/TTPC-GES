@@ -1,0 +1,19 @@
+-------------------------------------------------------------------------------
+Test set: com.ttpc.ges.integration.controller.AnimalControllerIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.011 s <<< FAILURE! -- in com.ttpc.ges.integration.controller.AnimalControllerIntegrationTest
+com.ttpc.ges.integration.controller.AnimalControllerIntegrationTest.testAddAnimalListenerWithNullAnimalDoesNothing -- Time elapsed: 0.005 s <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+animalPanel.updateAnimalTable(<any>);
+Never wanted here:
+-> at com.ttpc.ges.view.AnimalPanel.updateAnimalTable(AnimalPanel.java:387)
+But invoked here:
+-> at com.ttpc.ges.controller.AnimalController.<init>(AnimalController.java:21) with arguments: [[]]
+
+	at com.ttpc.ges.view.AnimalPanel.updateAnimalTable(AnimalPanel.java:387)
+	at com.ttpc.ges.integration.controller.AnimalControllerIntegrationTest.testAddAnimalListenerWithNullAnimalDoesNothing(AnimalControllerIntegrationTest.java:63)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

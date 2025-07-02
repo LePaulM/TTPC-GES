@@ -23,9 +23,9 @@ public class AnimalControllerFonctionTest {
     private AnimalController controller;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() {       
+    	mockDbManager = mock(DatabaseManager.class);
         mockAnimalPanel = mock(AnimalPanel.class);
-        mockDbManager = mock(DatabaseManager.class);
         mockMouvementPanel = mock(MouvementPanel.class);
 
         // Simuler la liste d’animaux retournée par la base
