@@ -7,23 +7,24 @@ import java.awt.event.FocusListener;
 
 public class TTPCButton extends JButton {
 
-    private Color normalBackground = new Color(220, 240, 255);
+    private Color normalBackground = new Color(250, 250, 250);
     private Color normalBorder = new Color(160, 190, 220);
     private Color focusBackground = new Color(200, 230, 255);
     private Color focusBorder = new Color(100, 160, 210);
 
     public TTPCButton(String text) {
         super();
+        System.out.println("i am button : " + text);
         setMultilineText(text);
         setFont(new Font("SansSerif", Font.BOLD, 13));
 
         setFocusPainted(false);
         setContentAreaFilled(false);
-        setOpaque(true);
+        setOpaque(false);
 
         setBackground(normalBackground);
         setForeground(Color.DARK_GRAY);
-        setBorder(BorderFactory.createLineBorder(normalBorder, 2));
+        //setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         setMargin(new Insets(6, 12, 6, 12));  // haut, gauche, bas, droite
 
 
@@ -68,10 +69,10 @@ public class TTPCButton extends JButton {
 
     @Override
     protected void paintComponent(Graphics g) {
-        // Force l'application du fond avec coins arrondis
         Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setColor(getBackground());
-        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
+        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 40, 40); // rayon des coins
         g2.dispose();
         super.paintComponent(g);
     }
