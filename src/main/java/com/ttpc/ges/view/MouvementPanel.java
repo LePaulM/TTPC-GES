@@ -79,7 +79,7 @@ public class MouvementPanel extends JPanel {
         formPanel.add(new JLabel("Date (JJ/MM/AAAA) :")); formPanel.add(dateField);
         formPanel.add(new JLabel("")); formPanel.add(decedeCheckBox);
 
-        addButton = new TTPCButton("Ajouter");
+        addButton = new TTPCButton("Ajouter un mouvement");
         addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         editButton = new TTPCButton("Modifier la sélection");
         editButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -92,7 +92,7 @@ public class MouvementPanel extends JPanel {
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
-        buttonPanel.add(voirMouvementsButton);
+        // buttonPanel.add(voirMouvementsButton);
 
 
         buttonPanel.setLayout(new GridLayout(1, 0, 10, 10));
