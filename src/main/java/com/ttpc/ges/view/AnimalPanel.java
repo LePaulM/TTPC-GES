@@ -59,9 +59,10 @@ public class AnimalPanel extends JPanel {
         UIManager.put("TableHeader.font", new Font("SansSerif", Font.BOLD, 14));
 
         // === Formulaire ===
-        JPanel formPanel = new JPanel(new GridLayout(0, 2, 10, 10));
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         formPanel.setBorder(BorderFactory.createTitledBorder("Ajouter un animal"));
-
+        gbc.insets = new Insets(5,5,5,5);
         numeroIdField = new TTPCTextField();
         nomField = new TTPCTextField();
         especeField = new TTPCTextField();
@@ -70,6 +71,8 @@ public class AnimalPanel extends JPanel {
         provenanceField = new TTPCTextField();
         descriptionArea = new JTextArea(3, 20);
         JScrollPane descriptionScroll = new JScrollPane(descriptionArea);
+        descriptionScroll.setPreferredSize(new Dimension(50,50));
+        descriptionScroll.setMinimumSize(new Dimension(50,50));
         
         addButton = new TTPCButton("Ajouter animal");
         addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -79,18 +82,102 @@ public class AnimalPanel extends JPanel {
         deleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         voirMouvementsButton = new TTPCButton("Voir les mouvements");
         voirMouvementsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        formPanel.add(new JLabel("Numéro d'identification :")); formPanel.add(numeroIdField);
-        formPanel.add(new JLabel("Nom :")); formPanel.add(nomField);
-        formPanel.add(new JLabel("Espèce :")); formPanel.add(especeField);
-        formPanel.add(new JLabel("Sexe :")); formPanel.add(sexeBox);
-        formPanel.add(new JLabel("Âge :")); formPanel.add(ageSpinner);
-        formPanel.add(new JLabel("Provenance (Nom, qualité et adresse du fournisseur) :")); formPanel.add(provenanceField);
-        formPanel.add(new JLabel("Description (Race, robe, poils, taille,signes particuliers) :")); formPanel.add(descriptionScroll);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(new JLabel("Numéro d'identification :"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        formPanel.add(numeroIdField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(new JLabel("Nom :"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        formPanel.add(nomField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(new JLabel("Espèce :"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        formPanel.add(especeField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(new JLabel("Sexe :"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        formPanel.add(sexeBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(new JLabel("Âge :"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        formPanel.add(ageSpinner, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(new JLabel("Provenance :"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        formPanel.add(provenanceField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+        formPanel.add(new JLabel("Description (Race, robe, poils, taille,signes particuliers) :"), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 3.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        formPanel.add(descriptionScroll, gbc);
 
         configurerAgeSpinner();
         
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,15, 10));
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
@@ -100,7 +187,7 @@ public class AnimalPanel extends JPanel {
         buttonPanel.setPreferredSize(new Dimension(buttonPanel.getPreferredSize().width, 75));     
         
         formPanel.setBackground(blueColor);
-        formPanel.setPreferredSize(new Dimension(200, 400));
+        formPanel.setPreferredSize(new Dimension(200, 450));
         formPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 500));
         
         buttonPanel.setBackground(blueColor);

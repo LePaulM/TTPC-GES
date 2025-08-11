@@ -1,6 +1,6 @@
 # TTPC-GES
 
-**TTPC-GES** est une application de gestion destinée à la pension féline et canine **Tendres Truffes**.  
+**TTPC-GES** est une application de gestion destinée à la pension féline et canine **Tendres Truffes et Pattes au Chaud**.  
 Elle permet de suivre les animaux accueillis, leurs mouvements d'entrée et de sortie, ainsi que d'importer/exporter les données au format CSV.
 
 ---
@@ -18,15 +18,16 @@ Elle permet de suivre les animaux accueillis, leurs mouvements d'entrée et de s
 
 ## 🖥️ Installation
 
-1. Exécute le fichier `TTPC-GES-Setup.exe` *(installateur Windows généré avec Inno Setup)*
-2. Suis les instructions à l’écran
-3. Un raccourci vers **TTPC-GES** sera placé sur le bureau
+1. Installer Java 17 ou une version plus réccente : https://www.oracle.com/fr/java/technologies/downloads/
+2. Exécuter le fichier `TTPC-GES-Setup.exe` *(installateur Windows généré avec Inno Setup)*
+3. Suivre les instructions à l’écran
+4. Un raccourci vers **TTPC-GES** sera placé sur le bureau
 
 ---
 
 ## 🚀 Lancement manuel (développeurs)
 
-Si tu veux lancer l’application sans l’installateur :
+Pour lancer l’application sans l’installateur :
 
 ```bash
 cd TTPC-GES

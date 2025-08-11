@@ -88,7 +88,7 @@ public class MouvementPanel extends JPanel {
         voirMouvementsButton = new TTPCButton("Voir tous les mouvements");
         voirMouvementsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,15, 10));
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
